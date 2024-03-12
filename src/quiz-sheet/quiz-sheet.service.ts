@@ -1,0 +1,64 @@
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+
+import { GetQuizSheetResponse } from './dto/response/get-quiz-sheet.response';
+import { QuizAnswerSheet } from 'src/database/schema/quiz-answers.schema';
+import { QuizSheetConfigService } from 'src/quiz-sheet-config/quiz-sheet-config.service';
+import { QuizQuestion } from 'src/database/schema/quiz-questions/index.schema';
+
+@Injectable()
+export class QuizSheetService {
+  constructor(
+    @InjectModel(QuizAnswerSheet.name)
+    private readonly quizSheetModel: Model<QuizAnswerSheet>,
+    @InjectModel(QuizQuestion.name)
+    private readonly quizQuestionModel: Model<QuizQuestion>,
+    private readonly quizSheetConfigService: QuizSheetConfigService,
+  ) {}
+
+  async attemptQuiz() {
+    //TODO: Get sheet config
+    const sheetConfig = await this.quizSheetConfigService.getQuizSheetConfig();
+    //TODO: Get questions
+    const { quizDuration, courseId, content, _id } = sheetConfig;
+    const questionPromises = content.map((config) => {
+      const { chapter, numberOfQuestions } = config;
+      //get random questions from chapter
+      return this.quizQuestionModel
+        .aggregate()
+        .match({ chapter })
+        .sample(1)
+        .project({ _id: 1 })
+        .exec();
+    });
+
+    const questions = await Promise.all(questionPromises);
+    const questionIds = questions.flat().map(({ _id }) => _id);
+    //TODO: Create new sheet
+    const newSheet = new this.quizSheetModel({
+      configId: _id,
+      courseId,
+      quizDuration,
+      questions: questionIds.map((question) => ({ question })),
+    });
+    return await newSheet.save();
+  }
+
+  async getQuizSheet(
+    sheetId: string,
+    omitKey = true,
+  ): Promise<GetQuizSheetResponse> {
+    const quizSheet: QuizAnswerSheet = await this.quizSheetModel
+      .findById(sheetId)
+      .lean();
+    if (!quizSheet)
+      throw new HttpException('Not found Quiz Sheet', HttpStatus.NOT_FOUND);
+    //Omit answers in sheet
+    if (omitKey)
+      quizSheet.questions.forEach(({ question }) => {
+        question.config.answers = [];
+      });
+    return quizSheet as GetQuizSheetResponse;
+  }
+}

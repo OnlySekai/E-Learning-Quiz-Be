@@ -7,7 +7,7 @@ export class MultipleChoiceConfig {
     required: true,
     default: [],
   })
-  answerIds: number[];
+  answers: number[];
 
   @Prop({
     required: true,
@@ -34,6 +34,8 @@ export class MultipleChoiceQuizQuestion implements QuizQuestion {
   question: string;
   note: string;
   point: number;
+  chapter: number;
+  level: number;
   @Prop({
     type: MultipleChoiceConfigSchema,
     required: true,

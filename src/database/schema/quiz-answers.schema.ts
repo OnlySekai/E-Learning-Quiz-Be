@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { SchemaTypes } from 'mongoose';
+import { SchemaTypes, HydratedDocument } from 'mongoose';
 import { QuizQuestion } from './quiz-questions/index.schema';
 
 @Schema()
@@ -41,9 +41,22 @@ export class QuizAnswerSheet {
   //TODO: Contest
   //TODO: Leaner
   @Prop({
-    type: LeanerQuestionSchema,
+    required: true,
+  })
+  configId: string;
+  @Prop({
+    required: true,
+  })
+  courseId: string;
+  @Prop({
+    required: true,
+  })
+  quizDuration: number;
+  @Prop({
+    type: [LeanerQuestionSchema],
   })
   questions: LeanerQuestion[];
 }
 
 export const QuizAnswerSchema = SchemaFactory.createForClass(QuizAnswerSheet);
+export type QuizAnswerSheetDocument = HydratedDocument<QuizAnswerSheet>;

@@ -9,20 +9,20 @@ export class QuizSheetConfigService {
       _id: '123',
       content: [
         {
+          chapter: 0,
+          numberOfQuestions: 1,
+        },
+        {
           chapter: 1,
-          numberOfQuestions: 4,
+          numberOfQuestions: 1,
         },
         {
           chapter: 2,
-          numberOfQuestions: 4,
+          numberOfQuestions: 1,
         },
         {
           chapter: 3,
-          numberOfQuestions: 4,
-        },
-        {
-          chapter: 4,
-          numberOfQuestions: 4,
+          numberOfQuestions: 1,
         },
       ],
     };

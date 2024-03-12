@@ -1,5 +1,6 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
+import * as _ from 'lodash';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { GetQuizSheetResponse } from './dto/response/get-quiz-sheet.response';
@@ -28,7 +29,7 @@ export class QuizSheetService {
       return this.quizQuestionModel
         .aggregate()
         .match({ chapter })
-        .sample(1)
+        .sample(numberOfQuestions)
         .project({ _id: 1 })
         .exec();
     });
@@ -60,5 +61,46 @@ export class QuizSheetService {
         question.config.answers = [];
       });
     return quizSheet as GetQuizSheetResponse;
+  }
+
+  async submitQuestion(
+    sheetId: string,
+    questionIdx: number,
+    userAnswers: unknown[],
+    duration: number,
+  ) {
+    const quizSheet = await this.quizSheetModel
+      .findById(sheetId)
+      .slice('questions', [questionIdx, 1])
+      .populate('questions.question', 'config.answers', this.quizQuestionModel)
+      .lean();
+    if (!quizSheet || !quizSheet.questions.length)
+      throw new HttpException('Not found question', HttpStatus.NOT_FOUND);
+    const [questionInfo] = quizSheet.questions;
+    const {
+      question: {
+        config: { answers },
+      },
+    } = questionInfo;
+    const isCorrect = _.isEqual(_.sortBy(userAnswers), _.sortBy(answers));
+    await this.quizSheetModel.updateOne(
+      {
+        _id: new Types.ObjectId(sheetId),
+      },
+      {
+        $set: {
+          [`questions.${questionIdx}.duration`]: duration,
+          [`questions.${questionIdx}.correct`]: isCorrect,
+          [`questions.${questionIdx}.answers`]: userAnswers,
+        },
+        $push: {
+          [`questions.${questionIdx}.histories`]: {
+            duration,
+            answers: userAnswers,
+            correct: isCorrect,
+          },
+        },
+      },
+    );
   }
 }

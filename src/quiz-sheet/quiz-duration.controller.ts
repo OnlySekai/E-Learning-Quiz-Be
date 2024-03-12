@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -8,6 +9,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { QuizSheetService } from './quiz-sheet.service';
+import { SubmitAnswerRequest } from './dto/request/submit-anwser.request';
 
 @Controller('quiz')
 export class QuizDurationController {
@@ -25,7 +27,16 @@ export class QuizDurationController {
     //TODO: calculate point and re-build study path
   }
   @Put()
-  submitAnswer() {}
+  submitAnswer(@Body() body: SubmitAnswerRequest) {
+    const { sheetId, questionId, duration, answer } = body;
+    //TODO:
+    return this.quizSheetService.submitQuestion(
+      sheetId,
+      questionId,
+      answer,
+      duration,
+    );
+  }
   @Delete()
   removeAnswer() {}
 }

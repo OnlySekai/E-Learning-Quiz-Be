@@ -7,12 +7,16 @@ export class AnswerHistory {
   @Prop({
     required: true,
   })
-  answer: unknown[];
+  answers: unknown[];
 
   @Prop({
     required: true,
   })
   duration: number;
+  @Prop({
+    required: true,
+  })
+  correct: boolean;
 }
 
 const AnswerHistorySchema = SchemaFactory.createForClass(AnswerHistory);
@@ -36,7 +40,7 @@ export class LeanerQuestion {
 
 const LeanerQuestionSchema = SchemaFactory.createForClass(LeanerQuestion);
 
-@Schema({ collection: 'quiz_answer_sheet' })
+@Schema({ collection: 'quiz_answer_sheet', timestamps: true })
 export class QuizAnswerSheet {
   //TODO: Contest
   //TODO: Leaner

@@ -36,6 +36,8 @@ export class MultipleChoiceQuizQuestion implements QuizQuestion {
   point: number;
   chapter: number;
   level: number;
+  createdAt: Date;
+  updatedAt: Date;
   @Prop({
     type: MultipleChoiceConfigSchema,
     required: true,

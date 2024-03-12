@@ -7,6 +7,7 @@ import { GetQuizSheetResponse } from './dto/response/get-quiz-sheet.response';
 import { QuizAnswerSheet } from 'src/database/schema/quiz-answers.schema';
 import { QuizSheetConfigService } from 'src/quiz-sheet-config/quiz-sheet-config.service';
 import { QuizQuestion } from 'src/database/schema/quiz-questions/index.schema';
+import { CreateQuizSheetResponse } from './dto/response/create-quiz-sheet.response';
 
 @Injectable()
 export class QuizSheetService {
@@ -18,7 +19,7 @@ export class QuizSheetService {
     private readonly quizSheetConfigService: QuizSheetConfigService,
   ) {}
 
-  async attemptQuiz() {
+  async attemptQuiz(): Promise<CreateQuizSheetResponse> {
     //TODO: Get sheet config
     const sheetConfig = await this.quizSheetConfigService.getQuizSheetConfig();
     //TODO: Get questions
@@ -43,7 +44,12 @@ export class QuizSheetService {
       quizDuration,
       questions: questionIds.map((question) => ({ question })),
     });
-    return await newSheet.save();
+    await newSheet.save();
+    return {
+      sheetId: newSheet._id.toString(),
+      createdAt: newSheet.createdAt.toISOString(),
+      quizDuration,
+    };
   }
 
   async getQuizSheet(
@@ -52,6 +58,7 @@ export class QuizSheetService {
   ): Promise<GetQuizSheetResponse> {
     const quizSheet: QuizAnswerSheet = await this.quizSheetModel
       .findById(sheetId)
+      .populate('questions.question', '', this.quizQuestionModel)
       .lean();
     if (!quizSheet)
       throw new HttpException('Not found Quiz Sheet', HttpStatus.NOT_FOUND);

@@ -47,6 +47,8 @@ export class QuizQuestion {
   config: {
     answers: unknown[];
   };
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export const QuizQuestionSchema = SchemaFactory.createForClass(QuizQuestion);

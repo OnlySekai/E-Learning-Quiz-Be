@@ -60,6 +60,8 @@ export class QuizAnswerSheet {
     type: [LeanerQuestionSchema],
   })
   questions: LeanerQuestion[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export const QuizAnswerSchema = SchemaFactory.createForClass(QuizAnswerSheet);

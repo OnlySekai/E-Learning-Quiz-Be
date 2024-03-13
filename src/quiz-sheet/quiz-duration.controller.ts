@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { QuizSheetService } from './quiz-sheet.service';
 import { SubmitAnswerRequest } from './dto/request/submit-anwser.request';
+import { SubmitQuizSheetRequest } from './dto/request/submit-quiz-sheet.response';
 
 @Controller('quiz')
 export class QuizDurationController {
@@ -23,8 +24,8 @@ export class QuizDurationController {
     return this.quizSheetService.getQuizSheet(sheetId);
   }
   @Patch()
-  submitQuiz() {
-    //TODO: calculate point and re-build study path
+  submitQuiz(@Body() body: SubmitQuizSheetRequest) {
+    return this.quizSheetService.submitQuizSheet(body.sheetId);
   }
   @Put()
   submitAnswer(@Body() body: SubmitAnswerRequest) {

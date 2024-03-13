@@ -60,6 +60,10 @@ export class QuizAnswerSheet {
     type: [LeanerQuestionSchema],
   })
   questions: LeanerQuestion[];
+  @Prop()
+  submittedAt: Date;
+  @Prop()
+  score: number;
   createdAt: Date;
   updatedAt: Date;
 }

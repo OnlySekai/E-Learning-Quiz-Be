@@ -8,6 +8,7 @@ import { QuizAnswerSheet } from 'src/database/schema/quiz-answers.schema';
 import { QuizSheetConfigService } from 'src/quiz-sheet-config/quiz-sheet-config.service';
 import { QuizQuestion } from 'src/database/schema/quiz-questions/index.schema';
 import { CreateQuizSheetResponse } from './dto/response/create-quiz-sheet.response';
+import { SubmitQuizSheetResponse } from './dto/response/submit-quiz-sheet.response';
 
 @Injectable()
 export class QuizSheetService {
@@ -109,5 +110,41 @@ export class QuizSheetService {
         },
       },
     );
+  }
+
+  async submitQuizSheet(sheetId: string): Promise<SubmitQuizSheetResponse> {
+    const quizSheet = await this.quizSheetModel
+      .findById(sheetId)
+      .populate('questions.question', 'point', this.quizQuestionModel)
+      .lean();
+    if (!quizSheet)
+      throw new HttpException('Not found Quiz Sheet', HttpStatus.NOT_FOUND);
+    const correctAnswers = quizSheet.questions.filter(({ correct }) => correct);
+    const totalScore = correctAnswers.reduce(
+      (acc, { question }) => acc + question.point,
+      0,
+    );
+    const { modifiedCount } = await this.quizSheetModel.updateOne(
+      {
+        _id: new Types.ObjectId(sheetId),
+        submittedAt: null,
+      },
+      {
+        $set: {
+          submittedAt: new Date(),
+          score: totalScore,
+        },
+      },
+    );
+    if (!modifiedCount)
+      throw new HttpException(
+        'Quiz sheet have been submitted',
+        HttpStatus.BAD_REQUEST,
+      );
+    return {
+      sheetId,
+      score: totalScore,
+      correctAnswers: correctAnswers.length,
+    };
   }
 }

@@ -1,4 +1,4 @@
-export interface CreateQuizSheetResponse {
+export class CreateQuizSheetResponse {
   sheetId: string;
   createdAt: string;
   quizDuration: number;

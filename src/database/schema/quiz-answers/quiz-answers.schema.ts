@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { SchemaTypes, HydratedDocument } from 'mongoose';
-import { QuizQuestion } from './quiz-questions/index.schema';
+import { QuizQuestion } from '../quiz-questions/quiz-question.schema';
 
 @Schema()
 export class AnswerHistory {

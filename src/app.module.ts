@@ -9,6 +9,7 @@ import { DatabaseModule } from './database/database.module';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { AuthModule } from './auth/auth.module';
 import { QuizSheetConfigModule } from './quiz-sheet-config/quiz-sheet-config.module';
+import { CourseModule } from './course/course.module';
 
 @Module({
   controllers: [AppController],
@@ -21,12 +22,13 @@ import { QuizSheetConfigModule } from './quiz-sheet-config/quiz-sheet-config.mod
       isGlobal: true,
     }),
     MongooseModule.forRoot(
-      'mongodb://localhost/e-learning?retryWrites=true&w=majority',
+      process.env.DATABASE_URL
     ),
     QuizDurationModule,
     DatabaseModule,
     AuthModule,
     QuizSheetConfigModule,
+    CourseModule,
   ],
 })
 export class AppModule {}

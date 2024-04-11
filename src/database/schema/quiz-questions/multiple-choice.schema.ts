@@ -1,5 +1,6 @@
+
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { QuizQuestion } from './index.schema';
+import { QuizQuestion } from './quiz-question.schema';
 
 @Schema()
 export class MultipleChoiceConfig {

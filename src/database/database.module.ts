@@ -1,14 +1,18 @@
-import {Global, Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
   QuizQuestion,
   QuizQuestionSchema,
-} from './schema/quiz-questions/index.schema';
-import { QuizAnswerSheet, QuizAnswerSchema } from './schema/quiz-answers.schema';
+} from './schema/quiz-questions/quiz-question.schema';
+import {
+  QuizAnswerSheet,
+  QuizAnswerSchema,
+} from './schema/quiz-answers/quiz-answers.schema';
 import {
   MultipleChoiceQuizQuestion,
   MultipleChoiceQuizQuestionSchema,
 } from './schema/quiz-questions/multiple-choice.schema';
+import { Course, CourseSchema } from './schema/courses/course.schema';
 
 @Global()
 @Module({
@@ -27,6 +31,10 @@ import {
             schema: MultipleChoiceQuizQuestionSchema,
           },
         ],
+      },
+      {
+        name: Course.name,
+        schema: CourseSchema,
       },
     ]),
   ],

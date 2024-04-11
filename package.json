@@ -14,6 +14,9 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
+    "g:mo": "nest g mo",
+    "g:co": "nest g co",
+    "g:s": "nest g s",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -31,8 +34,6 @@
     "@nestjs/mongoose": "^10.0.4",
     "@nestjs/platform-express": "^10.3.3",
     "@nestjs/swagger": "^7.3.0",
-    "@prisma/client": "^5.10.2",
-    "@zenstackhq/runtime": "1.9.0",
     "helmet": "^7.1.0",
     "lodash": "^4.17.21",
     "mongoose": "^8.2.0",
@@ -41,7 +42,7 @@
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
-    "@nestjs/cli": "^9.0.0",
+    "@nestjs/cli": "^10.3.2",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^10.3.3",
     "@types/cors": "^2",
@@ -81,6 +82,10 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "volta": {
+    "node": "20.11.1",
+    "yarn": "4.1.0"
   },
   "packageManager": "yarn@4.1.0"
 }

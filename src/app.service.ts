@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 // import { MongoDbService } from './database/mongodb.service';
 import { InjectModel } from '@nestjs/mongoose';
-import { QuizAnswerSheet } from './database/schema/quiz-answers.schema';
+import { QuizAnswerSheet } from './database/schema/quiz-answers/quiz-answers.schema';
 import { Model } from 'mongoose';
-import { QuizQuestion } from './database/schema/quiz-questions/index.schema';
+import { QuizQuestion } from './database/schema/quiz-questions/quiz-question.schema';
 
 @Injectable()
 export class AppService {

@@ -4,9 +4,9 @@ import * as _ from 'lodash';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { GetQuizSheetResponse } from './dto/response/get-quiz-sheet.response';
-import { QuizAnswerSheet } from 'src/database/schema/quiz-answers.schema';
+import { QuizAnswerSheet } from 'src/database/schema/quiz-answers/quiz-answers.schema';
 import { QuizSheetConfigService } from 'src/quiz-sheet-config/quiz-sheet-config.service';
-import { QuizQuestion } from 'src/database/schema/quiz-questions/index.schema';
+import { QuizQuestion } from 'src/database/schema/quiz-questions/quiz-question.schema';
 import { CreateQuizSheetResponse } from './dto/response/create-quiz-sheet.response';
 import { SubmitQuizSheetResponse } from './dto/response/submit-quiz-sheet.response';
 

@@ -1,3 +1,17 @@
-./dist
-./node_modules
-./cicd
+.DS_Store
+.vscode
+.dockerignore
+.env.example
+.git/
+.gitignore
+.eslintrc.js
+.gitlab-ci.yml
+.prettierrc
+cicd/
+node_modules/
+dist/
+# Jest coverage directory
+coverage/
+README.md
+LICENSE
+yarn-error.log

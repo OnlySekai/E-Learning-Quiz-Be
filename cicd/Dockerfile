@@ -1,17 +1,16 @@
 # build docker file for nestjs application
-FROM node:21-alpine3.19 as builder
+FROM node:20.11.1-alpine3.19 as builder
 WORKDIR /app
-COPY .yarn .yarn
-COPY package.json .yarnrc.yml ./
-RUN yarn install
 COPY . .
+RUN yarn install
 RUN yarn build
 
 # build docker file for nestjs application
-FROM node:21-alpine3.19
+FROM node:20.11.1-alpine3.19
 WORKDIR /app
+ENV  NODE_ENV=production
 COPY .yarn .yarn
-COPY package.json .yarnrc.yml ./
+COPY package.json .yarnrc.yml .env ./
 COPY --from=builder /app/dist ./dist
 RUN yarn install
 CMD ["yarn", "start:prod"]

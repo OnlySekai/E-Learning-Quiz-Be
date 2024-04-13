@@ -21,9 +21,7 @@ import { CourseModule } from './course/course.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    MongooseModule.forRoot(
-      process.env.DATABASE_URL
-    ),
+    MongooseModule.forRoot(process.env.DATABASE_URL),
     QuizDurationModule,
     DatabaseModule,
     AuthModule,

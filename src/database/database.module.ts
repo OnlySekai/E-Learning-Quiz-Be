@@ -12,7 +12,7 @@ import {
   MultipleChoiceQuizQuestion,
   MultipleChoiceQuizQuestionSchema,
 } from './schema/quiz-questions/multiple-choice.schema';
-import { Course, CourseSchema } from './schema/courses/course.schema';
+import { CourseEntity, CourseSchema } from './schema/courses/course.schema';
 
 @Global()
 @Module({
@@ -33,7 +33,7 @@ import { Course, CourseSchema } from './schema/courses/course.schema';
         ],
       },
       {
-        name: Course.name,
+        name: CourseEntity.name,
         schema: CourseSchema,
       },
     ]),

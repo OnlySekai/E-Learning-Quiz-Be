@@ -36,6 +36,7 @@ export class MultipleChoiceQuizQuestion implements QuizQuestion {
   note: string;
   point: number;
   chapter: number;
+  figure: number;
   level: number;
   createdAt: Date;
   updatedAt: Date;

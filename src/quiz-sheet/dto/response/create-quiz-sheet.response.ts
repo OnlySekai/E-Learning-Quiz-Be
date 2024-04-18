@@ -1,5 +1,5 @@
 export class CreateQuizSheetResponse {
   sheetId: string;
-  createdAt: string;
+  createdAt: Date;
   quizDuration: number;
 }

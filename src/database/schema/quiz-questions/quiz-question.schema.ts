@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { SchemaTypes } from 'mongoose';
 
-import { QuestionLevel, TypeQuizQuestion } from 'src/config/constants';
+import { QUESTION_LEVEL, TypeQuizQuestion } from 'src/config/constants';
 
 @Schema({
   discriminatorKey: 'type',
@@ -29,8 +29,14 @@ export class QuizQuestion {
 
   @Prop({
     required: true,
-    enum: QuestionLevel,
-    default: QuestionLevel.UNDERSTAND,
+    default: 0,
+  })
+  figure: number;
+
+  @Prop({
+    required: true,
+    enum: QUESTION_LEVEL,
+    default: QUESTION_LEVEL.UNDERSTAND,
   })
   level: number;
 

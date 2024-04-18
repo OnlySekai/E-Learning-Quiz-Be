@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { CourseService } from './course.service';
 import { UpdateCourseDto } from './dto/update-course.dto';
-import { Course } from 'src/database/schema/courses/course.schema';
+import { CourseEntity } from 'src/database/schema/courses/course.schema';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('course')
@@ -19,19 +19,19 @@ export class CourseController {
 
   @ApiOperation({ summary: 'Create a new course' })
   @Post()
-  create(@Body() courses: Course): Promise<void> {
+  create(@Body() courses: CourseEntity): Promise<void> {
     return this.courseService.create(courses);
   }
 
   @ApiOperation({ summary: 'Get all courses' })
   @Get()
-  findAll(): Promise<Course[]> {
+  findAll(): Promise<CourseEntity[]> {
     return this.courseService.findAll();
   }
 
   @ApiOperation({ summary: 'Get a course by id' })
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<Course> {
+  findOne(@Param('id') id: string): Promise<CourseEntity> {
     return this.courseService.findOne(id);
   }
 

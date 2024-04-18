@@ -47,11 +47,11 @@ export class QuizAnswerSheet {
   @Prop({
     required: true,
   })
-  configId: string;
-  @Prop({
-    required: true,
-  })
-  courseId: string;
+  configType: number;
+  // @Prop({
+  //   required: true,
+  // })
+  // courseId: string;
   @Prop({
     required: true,
   })

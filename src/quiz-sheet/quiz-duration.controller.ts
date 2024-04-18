@@ -23,7 +23,7 @@ export class QuizDurationController {
   @ApiOperation({ summary: 'Join a quiz' })
   @Post()
   joinQuiz() {
-    return this.quizSheetService.attemptQuiz();
+    return this.quizSheetService.attemptQuizDemo();
   }
 
   @ApiOperation({ summary: 'Get a quiz session' })
@@ -43,13 +43,6 @@ export class QuizDurationController {
   @ApiOperation({ summary: 'Submit an answer' })
   @Put()
   submitAnswer(@Body() body: SubmitAnswerRequest): Promise<void> {
-    const { sheetId, questionId, duration, answer } = body;
-    //TODO:
-    return this.quizSheetService.submitQuestion(
-      sheetId,
-      questionId,
-      answer,
-      duration,
-    );
+    return this.quizSheetService.submitQuestion(body);
   }
 }

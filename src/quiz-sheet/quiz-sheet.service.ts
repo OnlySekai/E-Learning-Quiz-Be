@@ -5,10 +5,11 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { GetQuizSheetResponse } from './dto/response/get-quiz-sheet.response';
 import { QuizAnswerSheet } from 'src/database/schema/quiz-answers/quiz-answers.schema';
-import { QuizSheetConfigService } from 'src/quiz-sheet-config/quiz-sheet-config.service';
+import { QuizSheetConfigService } from 'src/quiz-sheet/quiz-sheet-config.service';
 import { QuizQuestion } from 'src/database/schema/quiz-questions/quiz-question.schema';
 import { CreateQuizSheetResponse } from './dto/response/create-quiz-sheet.response';
 import { SubmitQuizSheetResponse } from './dto/response/submit-quiz-sheet.response';
+import { SubmitAnswerRequest } from './dto/request/submit-anwser.request';
 
 @Injectable()
 export class QuizSheetService {
@@ -20,18 +21,25 @@ export class QuizSheetService {
     private readonly quizSheetConfigService: QuizSheetConfigService,
   ) {}
 
-  async attemptQuiz(): Promise<CreateQuizSheetResponse> {
+  async attemptQuizDemo(): Promise<CreateQuizSheetResponse> {
     //TODO: Get sheet config
-    const sheetConfig = await this.quizSheetConfigService.getQuizSheetConfig();
+    const sheetConfig = await this.quizSheetConfigService.getSheetConfigByRange(
+      1,
+      2,
+    );
     //TODO: Get questions
-    const { quizDuration, courseId, content, _id } = sheetConfig;
+    const {
+      fixDuration: quizDuration,
+      content,
+      type: configType,
+    } = sheetConfig;
     const questionPromises = content.map((config) => {
-      const { chapter, numberOfQuestions } = config;
+      const { figure, chapter, lv: level, total } = config;
       //get random questions from chapter
       return this.quizQuestionModel
         .aggregate()
-        .match({ chapter })
-        .sample(numberOfQuestions)
+        .match({ chapter, figure, level })
+        .sample(total)
         .project({ _id: 1 })
         .exec();
     });
@@ -40,15 +48,18 @@ export class QuizSheetService {
     const questionIds = questions.flat().map(({ _id }) => _id);
     //TODO: Create new sheet
     const newSheet = new this.quizSheetModel({
-      configId: _id,
-      courseId,
+      configType,
       quizDuration,
-      questions: questionIds.map((question) => ({ question })),
+      questions: questionIds.map((question) => ({
+        question,
+        histories: [],
+        correct: false,
+      })),
     });
     await newSheet.save();
     return {
       sheetId: newSheet._id.toString(),
-      createdAt: newSheet.createdAt.toISOString(),
+      createdAt: newSheet.createdAt,
       quizDuration,
     };
   }
@@ -71,12 +82,12 @@ export class QuizSheetService {
     return quizSheet as GetQuizSheetResponse;
   }
 
-  async submitQuestion(
-    sheetId: string,
-    questionIdx: number,
-    userAnswers: unknown[],
-    duration: number,
-  ) {
+  async submitQuestion({
+    sheetId,
+    questionIdx,
+    answers: userAnswers,
+    duration,
+  }: SubmitAnswerRequest) {
     const quizSheet = await this.quizSheetModel
       .findById(sheetId)
       .slice('questions', [questionIdx, 1])
@@ -97,9 +108,7 @@ export class QuizSheetService {
       },
       {
         $set: {
-          [`questions.${questionIdx}.duration`]: duration,
           [`questions.${questionIdx}.correct`]: isCorrect,
-          [`questions.${questionIdx}.answers`]: userAnswers,
         },
         $push: {
           [`questions.${questionIdx}.histories`]: {

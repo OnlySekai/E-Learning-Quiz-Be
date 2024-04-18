@@ -8,7 +8,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { DatabaseModule } from './database/database.module';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { AuthModule } from './auth/auth.module';
-import { QuizSheetConfigModule } from './quiz-sheet-config/quiz-sheet-config.module';
 import { CourseModule } from './course/course.module';
 
 @Module({
@@ -25,7 +24,6 @@ import { CourseModule } from './course/course.module';
     QuizDurationModule,
     DatabaseModule,
     AuthModule,
-    QuizSheetConfigModule,
     CourseModule,
   ],
 })

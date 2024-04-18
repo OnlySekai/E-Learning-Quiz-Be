@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, ObjectId } from 'mongoose';
 
 @Schema()
-class CourseFigure {
+class CourseFigureEntity {
   @Prop({ required: true })
   figureName: string;
 
@@ -10,11 +10,11 @@ class CourseFigure {
   figureNumber: number;
 }
 
-export const courseFigureSchema = SchemaFactory.createForClass(CourseFigure);
-export type CourseFigureDocument = HydratedDocument<CourseFigure>;
+export const courseFigureSchema = SchemaFactory.createForClass(CourseFigureEntity);
+export type CourseFigureDocument = HydratedDocument<CourseFigureEntity>;
 
 @Schema()
-export class CourseChapter {
+export class CourseChapterEntity {
   @Prop({ required: true })
   chapterName: string;
 
@@ -22,20 +22,20 @@ export class CourseChapter {
   chapterNumber: number;
 
   @Prop({ required: true, type: [courseFigureSchema] })
-  figures: CourseFigure[];
+  figures: CourseFigureEntity[];
 }
 
 //Define Course schema
 @Schema({ collection: 'course_contents', timestamps: true })
-export class Course {
+export class CourseEntity {
   _id?: ObjectId;
   
   @Prop({ required: true })
   courseName: string;
 
-  @Prop({ required: true, type: [CourseChapter] })
-  chapters: CourseChapter[];
+  @Prop({ required: true, type: [CourseChapterEntity] })
+  chapters: CourseChapterEntity[];
 }
 
-export const CourseSchema = SchemaFactory.createForClass(Course);
-export type CourseDocument = HydratedDocument<Course>;
+export const CourseSchema = SchemaFactory.createForClass(CourseEntity);
+export type CourseDocument = HydratedDocument<CourseEntity>;

@@ -66,7 +66,7 @@ export class QuizSheetService {
 
   async getQuizSheet(
     sheetId: string,
-    omitKey = true,
+    omitKey = false,
   ): Promise<GetQuizSheetResponse> {
     const quizSheet: QuizAnswerSheet = await this.quizSheetModel
       .findById(sheetId)

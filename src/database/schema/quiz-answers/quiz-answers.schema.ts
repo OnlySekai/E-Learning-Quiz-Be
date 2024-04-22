@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { SchemaTypes, HydratedDocument } from 'mongoose';
-import { QuizQuestion } from '../quiz-questions/quiz-question.schema';
+import { QuizQuestionEntity } from '../quiz-questions/quiz-question.schema';
 
 @Schema()
-export class AnswerHistory {
+export class AnswerHistoryEntity {
   @Prop({
     required: true,
   })
@@ -19,17 +19,21 @@ export class AnswerHistory {
   correct: boolean;
 }
 
-const AnswerHistorySchema = SchemaFactory.createForClass(AnswerHistory);
+const AnswerHistorySchema = SchemaFactory.createForClass(AnswerHistoryEntity);
 
 @Schema()
-export class LeanerQuestion {
-  @Prop({ type: SchemaTypes.ObjectId, ref: QuizQuestion.name, required: true })
-  question: QuizQuestion;
+export class LeanerQuestionEntity {
+  @Prop({
+    type: SchemaTypes.ObjectId,
+    ref: QuizQuestionEntity.name,
+    required: true,
+  })
+  question: QuizQuestionEntity;
 
   @Prop({
     type: [AnswerHistorySchema],
   })
-  histories: AnswerHistory[];
+  histories: AnswerHistoryEntity[];
 
   @Prop({
     required: true,
@@ -38,10 +42,10 @@ export class LeanerQuestion {
   correct: boolean;
 }
 
-const LeanerQuestionSchema = SchemaFactory.createForClass(LeanerQuestion);
+const LeanerQuestionSchema = SchemaFactory.createForClass(LeanerQuestionEntity);
 
 @Schema({ collection: 'quiz_answer_sheet', timestamps: true })
-export class QuizAnswerSheet {
+export class QuizAnswerSheetEntity {
   //TODO: Contest
   //TODO: Leaner
   @Prop({
@@ -59,7 +63,7 @@ export class QuizAnswerSheet {
   @Prop({
     type: [LeanerQuestionSchema],
   })
-  questions: LeanerQuestion[];
+  questions: LeanerQuestionEntity[];
   @Prop()
   submittedAt: Date;
   @Prop()
@@ -68,5 +72,7 @@ export class QuizAnswerSheet {
   updatedAt: Date;
 }
 
-export const QuizAnswerSchema = SchemaFactory.createForClass(QuizAnswerSheet);
-export type QuizAnswerSheetDocument = HydratedDocument<QuizAnswerSheet>;
+export const QuizAnswerSheetSchema = SchemaFactory.createForClass(
+  QuizAnswerSheetEntity,
+);
+export type QuizAnswerSheetDocument = HydratedDocument<QuizAnswerSheetEntity>;

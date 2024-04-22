@@ -9,6 +9,7 @@ import { DatabaseModule } from './database/database.module';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { AuthModule } from './auth/auth.module';
 import { CourseModule } from './course/course.module';
+import { ReportModule } from './report/report.module';
 
 @Module({
   controllers: [AppController],
@@ -25,6 +26,7 @@ import { CourseModule } from './course/course.module';
     DatabaseModule,
     AuthModule,
     CourseModule,
+    ReportModule,
   ],
 })
 export class AppModule {}

@@ -1,33 +1,37 @@
 import { Global, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
-  QuizQuestion,
+  QuizQuestionEntity,
   QuizQuestionSchema,
 } from './schema/quiz-questions/quiz-question.schema';
 import {
-  QuizAnswerSheet,
-  QuizAnswerSchema,
+  QuizAnswerSheetEntity,
+  QuizAnswerSheetSchema,
 } from './schema/quiz-answers/quiz-answers.schema';
 import {
-  MultipleChoiceQuizQuestion,
+  MultipleChoiceQuizQuestionEntity,
   MultipleChoiceQuizQuestionSchema,
 } from './schema/quiz-questions/multiple-choice.schema';
 import { CourseEntity, CourseSchema } from './schema/courses/course.schema';
+import {
+  NotificationEntity,
+  NotificationSchema,
+} from './schema/notification/notifications.schema';
 
 @Global()
 @Module({
   imports: [
     MongooseModule.forFeature([
       {
-        name: QuizAnswerSheet.name,
-        schema: QuizAnswerSchema,
+        name: QuizAnswerSheetEntity.name,
+        schema: QuizAnswerSheetSchema,
       },
       {
-        name: QuizQuestion.name,
+        name: QuizQuestionEntity.name,
         schema: QuizQuestionSchema,
         discriminators: [
           {
-            name: MultipleChoiceQuizQuestion.name,
+            name: MultipleChoiceQuizQuestionEntity.name,
             schema: MultipleChoiceQuizQuestionSchema,
           },
         ],
@@ -35,6 +39,10 @@ import { CourseEntity, CourseSchema } from './schema/courses/course.schema';
       {
         name: CourseEntity.name,
         schema: CourseSchema,
+      },
+      {
+        name: NotificationEntity.name,
+        schema: NotificationSchema,
       },
     ]),
   ],

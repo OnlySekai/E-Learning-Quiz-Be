@@ -1,9 +1,8 @@
-
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { QuizQuestion } from './quiz-question.schema';
+import { QuizQuestionEntity } from './quiz-question.schema';
 
 @Schema()
-export class MultipleChoiceConfig {
+export class MultipleChoiceConfigEntity {
   @Prop({
     required: true,
     default: [],
@@ -26,11 +25,12 @@ export class MultipleChoiceConfig {
   })
   componentScore: boolean;
 }
-export const MultipleChoiceConfigSchema =
-  SchemaFactory.createForClass(MultipleChoiceConfig);
+export const MultipleChoiceConfigSchema = SchemaFactory.createForClass(
+  MultipleChoiceConfigEntity,
+);
 
 @Schema()
-export class MultipleChoiceQuizQuestion implements QuizQuestion {
+export class MultipleChoiceQuizQuestionEntity implements QuizQuestionEntity {
   type: number;
   question: string;
   note: string;
@@ -44,9 +44,9 @@ export class MultipleChoiceQuizQuestion implements QuizQuestion {
     type: MultipleChoiceConfigSchema,
     required: true,
   })
-  declare config: MultipleChoiceConfig;
+  declare config: MultipleChoiceConfigEntity;
 }
 
 export const MultipleChoiceQuizQuestionSchema = SchemaFactory.createForClass(
-  MultipleChoiceQuizQuestion,
+  MultipleChoiceQuizQuestionEntity,
 );

@@ -8,7 +8,7 @@ import { QUESTION_LEVEL, TypeQuizQuestion } from 'src/config/constants';
   timestamps: true,
   collection: 'quiz_questions',
 })
-export class QuizQuestion {
+export class QuizQuestionEntity {
   @Prop({
     required: true,
     enum: TypeQuizQuestion,
@@ -57,4 +57,5 @@ export class QuizQuestion {
   updatedAt: Date;
 }
 
-export const QuizQuestionSchema = SchemaFactory.createForClass(QuizQuestion);
+export const QuizQuestionSchema =
+  SchemaFactory.createForClass(QuizQuestionEntity);

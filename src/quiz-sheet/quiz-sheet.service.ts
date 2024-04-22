@@ -4,9 +4,9 @@ import * as _ from 'lodash';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { GetQuizSheetResponse } from './dto/response/get-quiz-sheet.response';
-import { QuizAnswerSheet } from 'src/database/schema/quiz-answers/quiz-answers.schema';
+import { QuizAnswerSheetEntity } from 'src/database/schema/quiz-answers/quiz-answers.schema';
 import { QuizSheetConfigService } from 'src/quiz-sheet/quiz-sheet-config.service';
-import { QuizQuestion } from 'src/database/schema/quiz-questions/quiz-question.schema';
+import { QuizQuestionEntity } from 'src/database/schema/quiz-questions/quiz-question.schema';
 import { CreateQuizSheetResponse } from './dto/response/create-quiz-sheet.response';
 import { SubmitQuizSheetResponse } from './dto/response/submit-quiz-sheet.response';
 import { SubmitAnswerRequest } from './dto/request/submit-anwser.request';
@@ -14,10 +14,10 @@ import { SubmitAnswerRequest } from './dto/request/submit-anwser.request';
 @Injectable()
 export class QuizSheetService {
   constructor(
-    @InjectModel(QuizAnswerSheet.name)
-    private readonly quizSheetModel: Model<QuizAnswerSheet>,
-    @InjectModel(QuizQuestion.name)
-    private readonly quizQuestionModel: Model<QuizQuestion>,
+    @InjectModel(QuizAnswerSheetEntity.name)
+    private readonly quizSheetModel: Model<QuizAnswerSheetEntity>,
+    @InjectModel(QuizQuestionEntity.name)
+    private readonly quizQuestionModel: Model<QuizQuestionEntity>,
     private readonly quizSheetConfigService: QuizSheetConfigService,
   ) {}
 
@@ -68,7 +68,7 @@ export class QuizSheetService {
     sheetId: string,
     omitKey = false,
   ): Promise<GetQuizSheetResponse> {
-    const quizSheet: QuizAnswerSheet = await this.quizSheetModel
+    const quizSheet: QuizAnswerSheetEntity = await this.quizSheetModel
       .findById(sheetId)
       .populate('questions.question', '', this.quizQuestionModel)
       .lean();

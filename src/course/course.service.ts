@@ -10,9 +10,10 @@ export class CourseService {
     @InjectModel(CourseEntity.name)
     private courseModel: Model<CourseEntity>,
   ) {}
-  async create(createCourseDto: CourseEntity): Promise<void> {
-    await this.courseModel.create(createCourseDto);
-  }
+  // async create(createCourseDto: CourseEntity): Promise<void> {
+  //   return;
+  //   await this.courseModel.create(createCourseDto);
+  // }
 
   findAll(): Promise<CourseEntity[]> {
     return this.courseModel.find().lean();
@@ -22,13 +23,13 @@ export class CourseService {
     return this.courseModel.findById(id).lean();
   }
 
-  update(id: string, updateCourseDto: UpdateCourseDto): Promise<CourseEntity> {
-    return this.courseModel.findOneAndUpdate(
-      { _id: new mongoose.SchemaTypes.ObjectId(id) },
-      { $set: updateCourseDto },
-      { new: true, lean: true },
-    );
-  }
+  // update(id: string, updateCourseDto: UpdateCourseDto): Promise<CourseEntity> {
+  //   return this.courseModel.findOneAndUpdate(
+  //     { _id: new mongoose.SchemaTypes.ObjectId(id) },
+  //     { $set: updateCourseDto },
+  //     { new: true, lean: true },
+  //   );
+  // }
 
   remove(id: string) {
     return `This action removes a #${id} course`;

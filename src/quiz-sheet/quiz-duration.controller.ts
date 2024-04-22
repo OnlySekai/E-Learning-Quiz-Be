@@ -14,6 +14,7 @@ import { SubmitQuizSheetRequest } from './dto/request/submit-quiz-sheet.request'
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetQuizSheetResponse } from './dto/response/get-quiz-sheet.response';
 import { SubmitQuizSheetResponse } from './dto/response/submit-quiz-sheet.response';
+import { SubmitAnswerSurveyRequest } from './dto/request/survay-answer.request';
 
 @ApiTags('Quiz')
 @Controller('quiz')
@@ -44,5 +45,11 @@ export class QuizDurationController {
   @Put()
   submitAnswer(@Body() body: SubmitAnswerRequest): Promise<void> {
     return this.quizSheetService.submitQuestion(body);
+  }
+
+  @ApiOperation({ summary: 'Submit survey' })
+  @Patch('/survey')
+  submitSurvey(@Body() body: SubmitAnswerSurveyRequest): Promise<void> {
+    return this.quizSheetService.submitAnswerSurvey(body);
   }
 }

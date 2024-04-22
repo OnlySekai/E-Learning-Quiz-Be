@@ -29,3 +29,7 @@ export const TIME_UNIT = {
   HOUR: 60 * 60 * 1000,
   DAY: 24 * 60 * 60 * 1000,
 };
+
+export const NOTIFICATION_TYPE = {
+  REPORT_QUESTION: 1,
+};

@@ -17,11 +17,11 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 export class CourseController {
   constructor(private readonly courseService: CourseService) {}
 
-  @ApiOperation({ summary: 'Create a new course' })
-  @Post()
-  create(@Body() courses: CourseEntity): Promise<void> {
-    return this.courseService.create(courses);
-  }
+  // @ApiOperation({ summary: 'Create a new course' })
+  // @Post()
+  // create(@Body() courses: CourseEntity): Promise<void> {
+  //   return this.courseService.create(courses);
+  // }
 
   @ApiOperation({ summary: 'Get all courses' })
   @Get()
@@ -35,11 +35,11 @@ export class CourseController {
     return this.courseService.findOne(id);
   }
 
-  @ApiOperation({ summary: 'Update a course by id' })
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto) {
-    return this.courseService.update(id, updateCourseDto);
-  }
+  // @ApiOperation({ summary: 'Update a course by id' })
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto) {
+  //   return this.courseService.update(id, updateCourseDto);
+  // }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

@@ -1,5 +1,5 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import mongoose, { Model, Types } from 'mongoose';
 import * as _ from 'lodash';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
@@ -10,6 +10,7 @@ import { QuizQuestionEntity } from 'src/database/schema/quiz-questions/quiz-ques
 import { CreateQuizSheetResponse } from './dto/response/create-quiz-sheet.response';
 import { SubmitQuizSheetResponse } from './dto/response/submit-quiz-sheet.response';
 import { SubmitAnswerRequest } from './dto/request/submit-anwser.request';
+import { SubmitAnswerSurveyRequest } from './dto/request/survay-answer.request';
 
 @Injectable()
 export class QuizSheetService {
@@ -155,5 +156,20 @@ export class QuizSheetService {
       score: totalScore,
       correctAnswers: correctAnswers.length,
     };
+  }
+
+  async submitAnswerSurvey({
+    questionIdx,
+    isRandom,
+    isWeak,
+    sheetId,
+  }: SubmitAnswerSurveyRequest) {
+    const quizSheet = await this.quizSheetModel.findById(sheetId);
+    const questionConfig = quizSheet.questions.at(questionIdx);
+    if (!questionConfig)
+      throw new HttpException('Not found question', HttpStatus.NOT_FOUND);
+    questionConfig.isRandom = isRandom;
+    questionConfig.isWeak = isWeak;
+    await quizSheet.save();
   }
 }

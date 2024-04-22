@@ -40,6 +40,12 @@ export class LeanerQuestionEntity {
     default: false,
   })
   correct: boolean;
+
+  @Prop()
+  isRandom: boolean;
+
+  @Prop()
+  isWeak: boolean;
 }
 
 const LeanerQuestionSchema = SchemaFactory.createForClass(LeanerQuestionEntity);

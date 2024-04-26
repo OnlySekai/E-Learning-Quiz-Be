@@ -18,8 +18,8 @@ export class QuizSheetConfigService {
     @InjectModel(CourseEntity.name) private courseModel: Model<CourseEntity>,
   ) {}
   async getSheetConfigByRange(
-    startChapter: number,
-    endChapter: number,
+    startContent: number[],
+    endContent: number[],
   ): Promise<QuizSheetConfigModel> {
     const courseDetail = await this.courseModel.findOne().lean();
     if (!courseDetail) {
@@ -30,8 +30,8 @@ export class QuizSheetConfigService {
     //filter chapter in range
     const chaptersInRange = chapters.filter(
       (chapter) =>
-        chapter.chapterNumber >= startChapter &&
-        chapter.chapterNumber <= endChapter,
+        chapter.chapterNumber >= startContent[0] &&
+        chapter.chapterNumber <= endContent[0],
     );
     if (chaptersInRange.length === 0) {
       throw new HttpException(
@@ -40,21 +40,45 @@ export class QuizSheetConfigService {
       );
     }
     const content: QuizSheetConfigContentModel[] = [];
-    for (const chapter of chaptersInRange) {
-      for (const figure of chapter.figures) {
-        for (const lv of QUESTION_LEVEL_VALUES) {
-          content.push({
-            chapter: chapter.chapterNumber,
-            figure: figure.figureNumber,
-            lv,
-            total: 1,
-          });
+    if (chaptersInRange.length === 1) {
+      chaptersInRange[0].figures
+        .filter(
+          ({ figureNumber }) =>
+            figureNumber >= startContent[1] && figureNumber <= endContent[1],
+        )
+        .forEach(({ figureNumber }) => {
+          for (const lv of QUESTION_LEVEL_VALUES) {
+            content.push({
+              chapter: chaptersInRange[0].chapterNumber,
+              figure: figureNumber,
+              lv,
+              total: 1,
+            });
+          }
+        });
+    } else {
+      chaptersInRange.at(0).figures = chaptersInRange
+        .at(0)
+        .figures.filter(({ figureNumber }) => figureNumber >= startContent[1]);
+      chaptersInRange.at(-1).figures = chaptersInRange
+        .at(-1)
+        .figures.filter(({ figureNumber }) => figureNumber <= endContent[1]);
+      for (const chapter of chaptersInRange) {
+        for (const figure of chapter.figures) {
+          for (const lv of QUESTION_LEVEL_VALUES) {
+            content.push({
+              chapter: chapter.chapterNumber,
+              figure: figure.figureNumber,
+              lv,
+              total: 1,
+            });
+          }
         }
       }
     }
     return {
       type: QuizSheetConfigType.LEVEL,
-      fixDuration: TIME_UNIT.HOUR,
+      fixDuration: TIME_UNIT.HOUR * 1.5,
       content,
     };
   }

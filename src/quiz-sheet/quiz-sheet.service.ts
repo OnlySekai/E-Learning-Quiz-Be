@@ -22,11 +22,13 @@ export class QuizSheetService {
     private readonly quizSheetConfigService: QuizSheetConfigService,
   ) {}
 
-  async attemptQuizDemo(): Promise<CreateQuizSheetResponse> {
+  async attemptQuizDemo(
+    studiedChapter: number[],
+  ): Promise<CreateQuizSheetResponse> {
     //TODO: Get sheet config
     const sheetConfig = await this.quizSheetConfigService.getSheetConfigByRange(
-      1,
-      2,
+      [1, 1],
+      studiedChapter,
     );
     //TODO: Get questions
     const {

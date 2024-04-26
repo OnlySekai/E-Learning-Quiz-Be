@@ -5,10 +5,10 @@ export enum TypeQuizQuestion {
 }
 
 export const QUESTION_LEVEL = {
-  RECOGNIZE: 0,
-  UNDERSTAND: 1,
-  APPLY: 2,
-  ANALYZE: 3,
+  RECOGNIZE: 1,
+  UNDERSTAND: 2,
+  APPLY: 3,
+  ANALYZE: 4,
 };
 
 // create const for number of Question level

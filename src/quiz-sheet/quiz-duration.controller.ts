@@ -23,8 +23,8 @@ export class QuizDurationController {
 
   @ApiOperation({ summary: 'Join a quiz' })
   @Post()
-  joinQuiz() {
-    return this.quizSheetService.attemptQuizDemo();
+  joinQuiz(@Body() body: { studiedChapter: number[] }) {
+    return this.quizSheetService.attemptQuizDemo(body.studiedChapter);
   }
 
   @ApiOperation({ summary: 'Get a quiz session' })

@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { QuizSheetService } from './quiz-sheet.service';
 import { SubmitAnswerRequest } from './dto/request/submit-anwser.request';
@@ -15,8 +16,10 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetQuizSheetResponse } from './dto/response/get-quiz-sheet.response';
 import { SubmitQuizSheetResponse } from './dto/response/submit-quiz-sheet.response';
 import { SubmitAnswerSurveyRequest } from './dto/request/survay-answer.request';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @ApiTags('Quiz')
+@UseGuards(AuthGuard)
 @Controller('quiz')
 export class QuizDurationController {
   constructor(private readonly quizSheetService: QuizSheetService) {}

@@ -17,6 +17,7 @@ import {
   NotificationEntity,
   NotificationSchema,
 } from './schema/notification/notifications.schema';
+import { UserEntity, UserSchema } from './schema/users/user.schema';
 
 @Global()
 @Module({
@@ -43,6 +44,10 @@ import {
       {
         name: NotificationEntity.name,
         schema: NotificationSchema,
+      },
+      {
+        name: UserEntity.name,
+        schema: UserSchema,
       },
     ]),
   ],

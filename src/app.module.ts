@@ -3,13 +3,13 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { QuizDurationModule } from './quiz-sheet/quiz-duration.module';
 import { ConfigModule } from '@nestjs/config';
-// import { DatabaseModule } from './database/database.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DatabaseModule } from './database/database.module';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { AuthModule } from './auth/auth.module';
 import { CourseModule } from './course/course.module';
 import { ReportModule } from './report/report.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   controllers: [AppController],
@@ -27,6 +27,7 @@ import { ReportModule } from './report/report.module';
     AuthModule,
     CourseModule,
     ReportModule,
+    UsersModule,
   ],
 })
 export class AppModule {}

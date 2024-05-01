@@ -33,3 +33,10 @@ export const TIME_UNIT = {
 export const NOTIFICATION_TYPE = {
   REPORT_QUESTION: 1,
 };
+
+export const ROLE = {
+  ADMIN: 'admin',
+  USER: 'user',
+};
+
+export const TOKEN_EXPIRES_IN = TIME_UNIT.DAY * 7;

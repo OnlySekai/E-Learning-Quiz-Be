@@ -55,8 +55,9 @@ export class QuizDurationController {
   @Patch()
   submitQuiz(
     @Body() body: SubmitQuizSheetRequest,
+    @Req() req: RequestWithUser,
   ): Promise<SubmitQuizSheetResponse> {
-    return this.quizSheetService.submitQuizSheet(body.sheetId);
+    return this.quizSheetService.submitQuizSheet(body.sheetId, req.user.id);
   }
 
   @ApiOperation({ summary: 'Submit an answer' })

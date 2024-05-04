@@ -11,6 +11,7 @@ import { CourseModule } from './course/course.module';
 import { ReportModule } from './report/report.module';
 import { UsersModule } from './users/users.module';
 import { StudyPathModule } from './study-path/study-path.module';
+import { MissionModule } from './missions/mission.module';
 
 @Module({
   controllers: [AppController],
@@ -30,6 +31,7 @@ import { StudyPathModule } from './study-path/study-path.module';
     ReportModule,
     UsersModule,
     StudyPathModule,
+    MissionModule,
   ],
 })
 export class AppModule {}

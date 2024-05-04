@@ -1,3 +1,17 @@
+import path from '../../data/study-path.json';
+
+export interface STUDY_PATH_NODE {
+  time: number;
+  children: string[];
+  parent: string[];
+}
+
+export const MAX_HOUSE_PER_DAY = 14;
+
+export const STUDY_REVIEW_RATIO = 3 / 4;
+
+export const STUDY_PATH: Record<string, STUDY_PATH_NODE> = path;
+
 export enum TypeQuizQuestion {
   MULTIPLE_CHOICE = 0,
   TRUE_FALSE = 1,

@@ -22,6 +22,10 @@ import {
   StudyPathEntity,
   StudyPathSchema,
 } from './schema/study-path/study-path.schema';
+import {
+  MissionEntity,
+  MissionSchema,
+} from './schema/missions/missions.schema';
 
 @Global()
 @Module({
@@ -56,6 +60,10 @@ import {
       {
         name: StudyPathEntity.name,
         schema: StudyPathSchema,
+      },
+      {
+        name: MissionEntity.name,
+        schema: MissionSchema,
       },
     ]),
   ],

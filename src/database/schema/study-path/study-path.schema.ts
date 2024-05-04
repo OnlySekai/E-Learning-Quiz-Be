@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { HydratedDocument, SchemaTypes } from 'mongoose';
-import { UserEntity } from '../users/user.schema';
-import { CourseEntity } from '../courses/course.schema';
+import { HydratedDocument, SchemaTypes } from 'mongoose';
+import { UserDocument, UserEntity } from '../users/user.schema';
+import { CourseDocument, CourseEntity } from '../courses/course.schema';
 
 export enum STUDY_STATUS {
   LOCKED = 1,
@@ -34,7 +34,7 @@ export class StudyPathEntity {
     type: SchemaTypes.ObjectId,
     ref: UserEntity.name,
   })
-  user: UserEntity;
+  user: UserDocument;
   @Prop({
     required: true,
   })
@@ -57,7 +57,7 @@ export class StudyPathEntity {
     type: SchemaTypes.ObjectId,
     ref: CourseEntity.name,
   })
-  course: CourseEntity;
+  course: CourseDocument;
   @Prop({
     required: true,
     type: [StudyStatusSchema],

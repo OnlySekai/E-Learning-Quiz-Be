@@ -16,6 +16,7 @@ import { SubmitAnswerRequest } from './dto/request/submit-anwser.request';
 import { SubmitAnswerSurveyRequest } from './dto/request/survay-answer.request';
 import { QUIZ_SHEET_CONFIG_TYPE } from 'src/config/constants';
 import { QuizSheetConfigModel } from './models/quiz-sheet-config.model';
+import { QuizSheetSubmitActionService } from './quiz-sheet-submit-action.service';
 
 @Injectable()
 export class QuizSheetService {
@@ -25,6 +26,7 @@ export class QuizSheetService {
     @InjectModel(QuizQuestionEntity.name)
     private readonly quizQuestionModel: Model<QuizQuestionEntity>,
     private readonly quizSheetConfigService: QuizSheetConfigService,
+    private readonly quizSheetSubmitActionService: QuizSheetSubmitActionService,
   ) {}
 
   private async getQuestionIdsFromConfig(
@@ -167,35 +169,31 @@ export class QuizSheetService {
     );
   }
 
-  async submitQuizSheet(sheetId: string): Promise<SubmitQuizSheetResponse> {
+  async submitQuizSheet(
+    sheetId: string,
+    userId: string,
+  ): Promise<SubmitQuizSheetResponse> {
     const quizSheet = await this.quizSheetModel
-      .findById(sheetId)
-      .populate('questions.question', 'point', this.quizQuestionModel)
-      .lean();
+      .findOne({
+        _id: new Types.ObjectId(sheetId),
+        user: new Types.ObjectId(userId),
+        submittedAt: null,
+      })
+      .populate('questions.question');
     if (!quizSheet)
-      throw new HttpException('Not found Quiz Sheet', HttpStatus.NOT_FOUND);
+      throw new HttpException(
+        'Không tìm thấy bài kiểm tra của bạn',
+        HttpStatus.NOT_FOUND,
+      );
     const correctAnswers = quizSheet.questions.filter(({ correct }) => correct);
     const totalScore = correctAnswers.reduce(
       (acc, { question }) => acc + question.point,
       0,
     );
-    const { modifiedCount } = await this.quizSheetModel.updateOne(
-      {
-        _id: new Types.ObjectId(sheetId),
-        submittedAt: null,
-      },
-      {
-        $set: {
-          submittedAt: new Date(),
-          score: totalScore,
-        },
-      },
-    );
-    if (!modifiedCount)
-      throw new HttpException(
-        'Quiz sheet have been submitted',
-        HttpStatus.BAD_REQUEST,
-      );
+    const { configType } = quizSheet;
+    await this.quizSheetSubmitActionService.getHandler(configType)(quizSheet);
+    await quizSheet.updateOne({ score: totalScore, submittedAt: new Date() });
+
     return {
       sheetId,
       score: totalScore,

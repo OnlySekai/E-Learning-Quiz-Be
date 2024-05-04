@@ -11,6 +11,8 @@ import { LoginRequest } from './dto/request/login.request';
 import { SignInRequest } from './dto/request/signIn.request';
 import { AuthGuard } from './auth.guard';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ProfileResponse } from './dto/response/profile.response';
+import { RequestWithUser } from 'src/types/types';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -31,7 +33,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Profile' })
   @UseGuards(AuthGuard)
   @Get('/profile')
-  profile(@Request() req) {
+  profile(@Request() req: RequestWithUser): ProfileResponse {
     return req.user;
   }
 }

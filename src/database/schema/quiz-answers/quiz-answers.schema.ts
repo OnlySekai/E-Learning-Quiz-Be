@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { SchemaTypes, HydratedDocument } from 'mongoose';
 import { QuizQuestionEntity } from '../quiz-questions/quiz-question.schema';
+import { UserEntity } from '../users/user.schema';
+import { StudyPathEntity } from '../study-path/study-path.schema';
 
 @Schema()
 export class AnswerHistoryEntity {
@@ -52,8 +54,16 @@ const LeanerQuestionSchema = SchemaFactory.createForClass(LeanerQuestionEntity);
 
 @Schema({ collection: 'quiz_answer_sheet', timestamps: true })
 export class QuizAnswerSheetEntity {
-  //TODO: Contest
-  //TODO: Leaner
+  @Prop({
+    type: SchemaTypes.ObjectId,
+    ref: UserEntity.name,
+  })
+  user?: UserEntity;
+  @Prop({
+    type: SchemaTypes.ObjectId,
+    ref: StudyPathEntity.name,
+  })
+  studyPath?: StudyPathEntity;
   @Prop({
     required: true,
   })

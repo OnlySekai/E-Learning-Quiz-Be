@@ -6,11 +6,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { CourseEntity } from '../database/schema/courses/course.schema';
 import { Model } from 'mongoose';
-import {
-  QUESTION_LEVEL_VALUES,
-  QuizSheetConfigType,
-  TIME_UNIT,
-} from '../config/constants';
+import { QUESTION_LEVEL_VALUES, TIME_UNIT } from '../config/constants';
 
 @Injectable()
 export class QuizSheetConfigService {
@@ -77,35 +73,8 @@ export class QuizSheetConfigService {
       }
     }
     return {
-      type: QuizSheetConfigType.LEVEL,
       fixDuration: TIME_UNIT.HOUR * 1.5,
       content,
-    };
-  }
-
-  async getQuizSheetConfig() {
-    return {
-      quizDuration: 60,
-      courseId: 'courseId',
-      _id: '123',
-      content: [
-        {
-          chapter: 0,
-          numberOfQuestions: 1,
-        },
-        {
-          chapter: 1,
-          numberOfQuestions: 1,
-        },
-        {
-          chapter: 2,
-          numberOfQuestions: 1,
-        },
-        {
-          chapter: 3,
-          numberOfQuestions: 1,
-        },
-      ],
     };
   }
 }

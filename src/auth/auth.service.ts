@@ -6,7 +6,7 @@ import { LoginRequest } from './dto/request/login.request';
 import { LoginResponse } from './dto/response/login.response';
 import { JwtService } from '@nestjs/jwt';
 import { UserDocument } from 'src/database/schema/users/user.schema';
-import { TOKEN_EXPIRES_IN } from 'src/config/constants';
+import { ProfileResponse } from './dto/response/profile.response';
 
 @Injectable()
 export class AuthService {
@@ -41,14 +41,15 @@ export class AuthService {
 
   async login({ email, password }: LoginRequest): Promise<LoginResponse> {
     const user = await this.validateUser({ email, password });
-    const jwtPayload = {
+    const jwtPayload: ProfileResponse = {
       email: user.email,
       role: user.role,
+      firstName: user.firstName,
+      lastName: user.lastName,
       id: user._id.toString(),
     };
     return {
       token: this.jwtService.sign(jwtPayload),
-      expiresIn: TOKEN_EXPIRES_IN,
     };
   }
 }

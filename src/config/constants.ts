@@ -16,7 +16,7 @@ export const NUMBER_QUESTION_LEVEL = Object.keys(QUESTION_LEVEL).length;
 
 export const QUESTION_LEVEL_VALUES = Object.values(QUESTION_LEVEL);
 
-export enum QuizSheetConfigType {
+export enum QUIZ_SHEET_CONFIG_TYPE {
   INPUT = 0,
   LEVEL = 1,
   FIGURE = 2,

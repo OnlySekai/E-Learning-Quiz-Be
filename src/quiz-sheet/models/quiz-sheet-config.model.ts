@@ -1,7 +1,4 @@
-import { QuizSheetConfigType } from 'src/config/constants';
-
 export interface QuizSheetConfigModel {
-  type: QuizSheetConfigType;
   fixDuration?: number;
   perDuration?: number;
   content: QuizSheetConfigContentModel[];

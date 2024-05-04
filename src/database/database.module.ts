@@ -18,6 +18,10 @@ import {
   NotificationSchema,
 } from './schema/notification/notifications.schema';
 import { UserEntity, UserSchema } from './schema/users/user.schema';
+import {
+  StudyPathEntity,
+  StudyPathSchema,
+} from './schema/study-path/study-path.schema';
 
 @Global()
 @Module({
@@ -48,6 +52,10 @@ import { UserEntity, UserSchema } from './schema/users/user.schema';
       {
         name: UserEntity.name,
         schema: UserSchema,
+      },
+      {
+        name: StudyPathEntity.name,
+        schema: StudyPathSchema,
       },
     ]),
   ],

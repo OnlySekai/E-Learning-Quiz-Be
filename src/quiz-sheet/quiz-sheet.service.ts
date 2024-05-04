@@ -1,16 +1,21 @@
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model, Types } from 'mongoose';
+import { Model, ObjectId, Types } from 'mongoose';
 import * as _ from 'lodash';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { GetQuizSheetResponse } from './dto/response/get-quiz-sheet.response';
-import { QuizAnswerSheetEntity } from 'src/database/schema/quiz-answers/quiz-answers.schema';
+import {
+  QuizAnswerSheetDocument,
+  QuizAnswerSheetEntity,
+} from 'src/database/schema/quiz-answers/quiz-answers.schema';
 import { QuizSheetConfigService } from 'src/quiz-sheet/quiz-sheet-config.service';
 import { QuizQuestionEntity } from 'src/database/schema/quiz-questions/quiz-question.schema';
 import { CreateQuizSheetResponse } from './dto/response/create-quiz-sheet.response';
 import { SubmitQuizSheetResponse } from './dto/response/submit-quiz-sheet.response';
 import { SubmitAnswerRequest } from './dto/request/submit-anwser.request';
 import { SubmitAnswerSurveyRequest } from './dto/request/survay-answer.request';
+import { QUIZ_SHEET_CONFIG_TYPE } from 'src/config/constants';
+import { QuizSheetConfigModel } from './models/quiz-sheet-config.model';
 
 @Injectable()
 export class QuizSheetService {
@@ -22,20 +27,10 @@ export class QuizSheetService {
     private readonly quizSheetConfigService: QuizSheetConfigService,
   ) {}
 
-  async attemptQuizDemo(
-    studiedChapter: number[],
-  ): Promise<CreateQuizSheetResponse> {
-    //TODO: Get sheet config
-    const sheetConfig = await this.quizSheetConfigService.getSheetConfigByRange(
-      [1, 1],
-      studiedChapter,
-    );
-    //TODO: Get questions
-    const {
-      fixDuration: quizDuration,
-      content,
-      type: configType,
-    } = sheetConfig;
+  private async getQuestionIdsFromConfig(
+    config: QuizSheetConfigModel,
+  ): Promise<ObjectId[]> {
+    const { content } = config;
     const questionPromises = content.map((config) => {
       const { figure, chapter, lv: level, total } = config;
       //get random questions from chapter
@@ -49,9 +44,36 @@ export class QuizSheetService {
 
     const questions = await Promise.all(questionPromises);
     const questionIds = questions.flat().map(({ _id }) => _id);
+    return questionIds;
+  }
+
+  private getCreateQuizSheetResponse(
+    quizSheet: QuizAnswerSheetDocument,
+  ): CreateQuizSheetResponse {
+    return {
+      sheetId: quizSheet._id.toString(),
+      createdAt: quizSheet.createdAt,
+      quizDuration: quizSheet.quizDuration,
+    };
+  }
+
+  async attemptQuizInput(
+    studiedChapter: number[],
+    studyPathId: string,
+    userId: string,
+  ): Promise<CreateQuizSheetResponse> {
+    const sheetConfig = await this.quizSheetConfigService.getSheetConfigByRange(
+      [1, 1],
+      studiedChapter,
+    );
+    //TODO: Get questions
+    const { fixDuration: quizDuration } = sheetConfig;
+    const questionIds = await this.getQuestionIdsFromConfig(sheetConfig);
     //TODO: Create new sheet
     const newSheet = new this.quizSheetModel({
-      configType,
+      user: new Types.ObjectId(userId),
+      studyPath: new Types.ObjectId(studyPathId),
+      configType: QUIZ_SHEET_CONFIG_TYPE.INPUT,
       quizDuration,
       questions: questionIds.map((question) => ({
         question,
@@ -60,11 +82,32 @@ export class QuizSheetService {
       })),
     });
     await newSheet.save();
-    return {
-      sheetId: newSheet._id.toString(),
-      createdAt: newSheet.createdAt,
+    return this.getCreateQuizSheetResponse(newSheet);
+  }
+
+  async attemptQuizDemo(
+    studiedChapter: number[],
+  ): Promise<CreateQuizSheetResponse> {
+    //TODO: Get sheet config
+    const sheetConfig = await this.quizSheetConfigService.getSheetConfigByRange(
+      [1, 1],
+      studiedChapter,
+    );
+    //TODO: Get questions
+    const { fixDuration: quizDuration } = sheetConfig;
+    const questionIds = await this.getQuestionIdsFromConfig(sheetConfig);
+    //TODO: Create new sheet
+    const newSheet = new this.quizSheetModel({
+      configType: QUIZ_SHEET_CONFIG_TYPE.INPUT,
       quizDuration,
-    };
+      questions: questionIds.map((question) => ({
+        question,
+        histories: [],
+        correct: false,
+      })),
+    });
+    await newSheet.save();
+    return this.getCreateQuizSheetResponse(newSheet);
   }
 
   async getQuizSheet(

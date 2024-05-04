@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Put,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { QuizSheetService } from './quiz-sheet.service';
@@ -17,6 +18,7 @@ import { GetQuizSheetResponse } from './dto/response/get-quiz-sheet.response';
 import { SubmitQuizSheetResponse } from './dto/response/submit-quiz-sheet.response';
 import { SubmitAnswerSurveyRequest } from './dto/request/survay-answer.request';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { RequestWithUser } from 'src/types/types';
 
 @ApiTags('Quiz')
 @UseGuards(AuthGuard)
@@ -28,6 +30,19 @@ export class QuizDurationController {
   @Post()
   joinQuiz(@Body() body: { studiedChapter: number[] }) {
     return this.quizSheetService.attemptQuizDemo(body.studiedChapter);
+  }
+
+  @ApiOperation({ summary: 'Join a quiz check input' })
+  @Post('/input')
+  joinQuizInput(
+    @Body() body: { studiedChapter: number[]; studyPathId: string },
+    @Req() req: RequestWithUser,
+  ) {
+    return this.quizSheetService.attemptQuizInput(
+      body.studiedChapter,
+      body.studyPathId,
+      req.user.id,
+    );
   }
 
   @ApiOperation({ summary: 'Get a quiz session' })

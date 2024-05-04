@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { CourseModule } from './course/course.module';
 import { ReportModule } from './report/report.module';
 import { UsersModule } from './users/users.module';
+import { StudyPathModule } from './study-path/study-path.module';
 
 @Module({
   controllers: [AppController],
@@ -28,6 +29,7 @@ import { UsersModule } from './users/users.module';
     CourseModule,
     ReportModule,
     UsersModule,
+    StudyPathModule,
   ],
 })
 export class AppModule {}

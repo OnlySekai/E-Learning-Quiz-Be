@@ -10,12 +10,10 @@ import { AuthGuard } from './auth.guard';
 @Module({
   imports: [
     UsersModule,
-    JwtModule.registerAsync({
+    JwtModule.register({
       global: true,
-      useFactory: () => ({
-        secret: process.env.JWT_SECRET,
-        signOptions: { expiresIn: TOKEN_EXPIRES_IN },
-      }),
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: TOKEN_EXPIRES_IN },
     }),
   ],
   controllers: [AuthController],

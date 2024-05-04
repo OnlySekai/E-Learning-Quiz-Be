@@ -7,7 +7,6 @@ import {
   MissionEntity,
 } from 'src/database/schema/missions/missions.schema';
 import { Model } from 'mongoose';
-import { ConfigService } from '@nestjs/config';
 import {
   MAX_HOUSE_PER_DAY,
   STUDY_PATH,

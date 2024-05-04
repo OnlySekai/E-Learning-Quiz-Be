@@ -10,7 +10,8 @@ class CourseFigureEntity {
   figureNumber: number;
 }
 
-export const courseFigureSchema = SchemaFactory.createForClass(CourseFigureEntity);
+export const courseFigureSchema =
+  SchemaFactory.createForClass(CourseFigureEntity);
 export type CourseFigureDocument = HydratedDocument<CourseFigureEntity>;
 
 @Schema()
@@ -29,7 +30,7 @@ export class CourseChapterEntity {
 @Schema({ collection: 'course_contents', timestamps: true })
 export class CourseEntity {
   _id?: ObjectId;
-  
+
   @Prop({ required: true })
   courseName: string;
 

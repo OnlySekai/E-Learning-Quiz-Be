@@ -9,7 +9,9 @@ describe('QuizSheetSubmitActionService', () => {
       providers: [QuizSheetSubmitActionService],
     }).compile();
 
-    service = module.get<QuizSheetSubmitActionService>(QuizSheetSubmitActionService);
+    service = module.get<QuizSheetSubmitActionService>(
+      QuizSheetSubmitActionService,
+    );
   });
 
   it('should be defined', () => {

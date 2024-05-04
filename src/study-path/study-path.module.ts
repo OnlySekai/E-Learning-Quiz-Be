@@ -4,6 +4,6 @@ import { StudyPathController } from './study-path.controller';
 
 @Module({
   controllers: [StudyPathController],
-  providers: [StudyPathService]
+  providers: [StudyPathService],
 })
 export class StudyPathModule {}

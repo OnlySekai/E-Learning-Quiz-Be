@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { SignInRequest } from './dto/request/signIn.request';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
@@ -15,6 +19,9 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
   async signIn(signInRequest: SignInRequest): Promise<void> {
+    // check regex email
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(signInRequest.email))
+      throw new BadRequestException('Invalid email');
     const user = await this.usersService.findByEmail(signInRequest.email);
     if (user) {
       throw new UnauthorizedException('Email exists');

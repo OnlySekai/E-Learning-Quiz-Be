@@ -121,7 +121,7 @@ export class QuizSheetService {
       .populate('questions.question', '', this.quizQuestionModel)
       .lean();
     if (!quizSheet)
-      throw new HttpException('Not found Quiz Sheet', HttpStatus.NOT_FOUND);
+      throw new HttpException('Không tìm thấy bài làm', HttpStatus.NOT_FOUND);
     //Omit answers in sheet
     if (omitKey)
       quizSheet.questions.forEach(({ question }) => {

@@ -1,10 +1,13 @@
 import path from '../../data/study-path.json';
+import repeat_content from '../../data/repeat_content.json';
 
 export interface STUDY_PATH_NODE {
   time: number;
   children: string[];
   parent: string[];
 }
+
+export const REPEAT_CONTENT: Record<string, string[]> = repeat_content;
 
 export const MAX_HOUSE_PER_DAY = 14;
 

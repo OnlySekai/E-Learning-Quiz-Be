@@ -54,6 +54,19 @@ export class QuizDurationController {
     return this.quizSheetService.attemptQuizLevel(req.user.id, body);
   }
 
+  @ApiOperation({ summary: 'Join a quiz end figure' })
+  @Post('/end-figure')
+  joinQuizEndFigure(
+    @Body() body: { figureId: string },
+    @Req() req: RequestWithUser,
+  ) {
+    return this.quizSheetService.attemptQuizEndFigure(
+      body.figureId,
+      req.user.id,
+    );
+  }
+
+
   @ApiOperation({ summary: 'Get a quiz session' })
   @Get('/:id')
   getQuizSession(@Param('id') sheetId: string): Promise<GetQuizSheetResponse> {

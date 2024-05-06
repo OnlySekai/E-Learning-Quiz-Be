@@ -108,6 +108,26 @@ export class QuizSheetService {
     return this.getCreateQuizSheetResponse(newSheet);
   }
 
+  async attemptQuizEndFigure(
+    figureId: string,
+    userId: string,
+  ): Promise<CreateQuizSheetResponse> {
+    const sheetConfig = this.quizSheetConfigService.getSheetEndFigure(figureId);
+    const questionIds = await this.getQuestionIdsFromConfig(sheetConfig);
+    const newSheet = new this.quizSheetModel({
+      user: new Types.ObjectId(userId),
+      configType: QUIZ_SHEET_CONFIG_TYPE.FIGURE,
+      quizDuration: sheetConfig.fixDuration,
+      questions: questionIds.map((question) => ({
+        question,
+        histories: [],
+        correct: false,
+      })),
+    });
+    await newSheet.save();
+    return this.getCreateQuizSheetResponse(newSheet);
+  }
+
   async attemptQuizDemo(
     studiedChapter: number[],
   ): Promise<CreateQuizSheetResponse> {

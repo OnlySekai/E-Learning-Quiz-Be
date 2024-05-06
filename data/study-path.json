@@ -33,17 +33,7 @@
   "M1-D2-C2": {
     "time": 0.17,
     "children": ["M2-D2-C2"],
-    "parent": [
-      "start2",
-      "M3-D3-C1",
-      "M4-D3-C1",
-      "M3-D4-C1",
-      "M4-D4-C1",
-      "M3-D5-C1",
-      "M4-D5-C1",
-      "M3-D6-C1",
-      "M4-D6-C1"
-    ]
+    "parent": ["start2"]
   },
   "M1-D3-C2": {
     "time": 0.17,

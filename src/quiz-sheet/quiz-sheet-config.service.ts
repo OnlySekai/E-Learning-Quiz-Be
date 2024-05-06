@@ -6,8 +6,13 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { CourseEntity } from '../database/schema/courses/course.schema';
 import { Model } from 'mongoose';
-import { QUESTION_LEVEL_VALUES, TIME_UNIT } from '../config/constants';
+import {
+  QUESTION_LEVEL_VALUES,
+  REPEAT_CONTENT,
+  TIME_UNIT,
+} from '../config/constants';
 import { AttemptQuizLevelRequest } from './dto/request/attempt-quiz-level.request';
+import { slitIdToNumbers } from 'src/utils';
 
 @Injectable()
 export class QuizSheetConfigService {
@@ -93,6 +98,28 @@ export class QuizSheetConfigService {
           total: 4,
         },
       ],
+    };
+  }
+  getSheetEndFigure(figureId: string): QuizSheetConfigModel {
+    const figureIdsMustStudy = REPEAT_CONTENT[figureId];
+    if (!figureIdsMustStudy) {
+      throw new HttpException('Figure not found', HttpStatus.NOT_FOUND);
+    }
+    const content: QuizSheetConfigContentModel[] = [];
+    for (const figureIdMustStudy of figureIdsMustStudy) {
+      const [figure, chapter] = slitIdToNumbers(figureIdMustStudy);
+      for (const lv of QUESTION_LEVEL_VALUES) {
+        content.push({
+          chapter,
+          figure,
+          lv,
+          total: 1,
+        });
+      }
+    }
+    return {
+      fixDuration: TIME_UNIT.HOUR * 1,
+      content,
     };
   }
 }

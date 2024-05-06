@@ -7,6 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { CourseEntity } from '../database/schema/courses/course.schema';
 import { Model } from 'mongoose';
 import { QUESTION_LEVEL_VALUES, TIME_UNIT } from '../config/constants';
+import { AttemptQuizLevelRequest } from './dto/request/attempt-quiz-level.request';
 
 @Injectable()
 export class QuizSheetConfigService {
@@ -75,6 +76,23 @@ export class QuizSheetConfigService {
     return {
       fixDuration: TIME_UNIT.HOUR * 1.5,
       content,
+    };
+  }
+  getSheetByLevel({
+    chapter,
+    figure,
+    level,
+  }: AttemptQuizLevelRequest): QuizSheetConfigModel {
+    return {
+      fixDuration: TIME_UNIT.MINUTE * 30,
+      content: [
+        {
+          chapter,
+          figure,
+          lv: level,
+          total: 4,
+        },
+      ],
     };
   }
 }

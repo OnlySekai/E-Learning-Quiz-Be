@@ -19,6 +19,7 @@ import { SubmitQuizSheetResponse } from './dto/response/submit-quiz-sheet.respon
 import { SubmitAnswerSurveyRequest } from './dto/request/survay-answer.request';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { RequestWithUser } from 'src/types/types';
+import { AttemptQuizLevelRequest } from './dto/request/attempt-quiz-level.request';
 
 @ApiTags('Quiz')
 @UseGuards(AuthGuard)
@@ -43,6 +44,14 @@ export class QuizDurationController {
       body.studyPathId,
       req.user.id,
     );
+  }
+  @ApiOperation({ summary: 'Join a quiz check level' })
+  @Post('/level')
+  joinQuizLevel(
+    @Body() body: AttemptQuizLevelRequest,
+    @Req() req: RequestWithUser,
+  ) {
+    return this.quizSheetService.attemptQuizLevel(req.user.id, body);
   }
 
   @ApiOperation({ summary: 'Get a quiz session' })

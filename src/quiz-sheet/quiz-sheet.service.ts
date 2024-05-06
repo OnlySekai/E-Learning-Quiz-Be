@@ -17,6 +17,7 @@ import { SubmitAnswerSurveyRequest } from './dto/request/survay-answer.request';
 import { QUIZ_SHEET_CONFIG_TYPE } from 'src/config/constants';
 import { QuizSheetConfigModel } from './models/quiz-sheet-config.model';
 import { QuizSheetSubmitActionService } from './quiz-sheet-submit-action.service';
+import { AttemptQuizLevelRequest } from './dto/request/attempt-quiz-level.request';
 
 @Injectable()
 export class QuizSheetService {
@@ -77,6 +78,26 @@ export class QuizSheetService {
       studyPath: new Types.ObjectId(studyPathId),
       configType: QUIZ_SHEET_CONFIG_TYPE.INPUT,
       quizDuration,
+      questions: questionIds.map((question) => ({
+        question,
+        histories: [],
+        correct: false,
+      })),
+    });
+    await newSheet.save();
+    return this.getCreateQuizSheetResponse(newSheet);
+  }
+
+  async attemptQuizLevel(
+    userId: string,
+    config: AttemptQuizLevelRequest,
+  ): Promise<CreateQuizSheetResponse> {
+    const sheetConfig = this.quizSheetConfigService.getSheetByLevel(config);
+    const questionIds = await this.getQuestionIdsFromConfig(sheetConfig);
+    const newSheet = new this.quizSheetModel({
+      user: new Types.ObjectId(userId),
+      configType: QUIZ_SHEET_CONFIG_TYPE.LEVEL,
+      quizDuration: sheetConfig.fixDuration,
       questions: questionIds.map((question) => ({
         question,
         histories: [],

@@ -18,6 +18,7 @@ import { QUIZ_SHEET_CONFIG_TYPE } from 'src/config/constants';
 import { QuizSheetConfigModel } from './models/quiz-sheet-config.model';
 import { QuizSheetSubmitActionService } from './quiz-sheet-submit-action.service';
 import { AttemptQuizLevelRequest } from './dto/request/attempt-quiz-level.request';
+import { slitIdToNumbers } from 'src/utils';
 
 @Injectable()
 export class QuizSheetService {
@@ -95,6 +96,9 @@ export class QuizSheetService {
     const sheetConfig = this.quizSheetConfigService.getSheetByLevel(config);
     const questionIds = await this.getQuestionIdsFromConfig(sheetConfig);
     const newSheet = new this.quizSheetModel({
+      chapter: config.chapter,
+      figure: config.figure,
+      level: config.level,
       user: new Types.ObjectId(userId),
       configType: QUIZ_SHEET_CONFIG_TYPE.LEVEL,
       quizDuration: sheetConfig.fixDuration,
@@ -114,7 +118,10 @@ export class QuizSheetService {
   ): Promise<CreateQuizSheetResponse> {
     const sheetConfig = this.quizSheetConfigService.getSheetEndFigure(figureId);
     const questionIds = await this.getQuestionIdsFromConfig(sheetConfig);
+    const [figure, chapter] = slitIdToNumbers(figureId);
     const newSheet = new this.quizSheetModel({
+      chapter,
+      figure,
       user: new Types.ObjectId(userId),
       configType: QUIZ_SHEET_CONFIG_TYPE.FIGURE,
       quizDuration: sheetConfig.fixDuration,

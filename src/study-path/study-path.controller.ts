@@ -3,11 +3,9 @@ import {
   Get,
   Post,
   Body,
-  Patch,
-  Param,
-  Delete,
   Req,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { StudyPathService } from './study-path.service';
 import { CreateStudyPathDto } from './dto/create-study-path.dto';
@@ -28,10 +26,10 @@ export class StudyPathController {
     return this.studyPathService.create(req.user.id, createStudyPathDto);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.studyPathService.findAll();
-  // }
+  @Get()
+  findAll(@Req() req: RequestWithUser, @Query() query: { courseId: string }) {
+    return this.studyPathService.findAll(req.user.id, query.courseId);
+  }
 
   // @Get(':id')
   // findOne(@Param('id') id: string) {

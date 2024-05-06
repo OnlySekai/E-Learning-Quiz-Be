@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { QUIZ_SHEET_CONFIG_TYPE } from 'src/config/constants';
@@ -11,6 +11,7 @@ import {
   StudyPathEntity,
 } from 'src/database/schema/study-path/study-path.schema';
 import { MissionService } from 'src/missions/mission.service';
+import { slitIdToNumbers } from 'src/utils';
 
 export type HandlerSubmitAction = (
   quizSheet: QuizAnswerSheetDocument,
@@ -62,6 +63,10 @@ export class QuizSheetSubmitActionService {
         studyNode.lastStudy = new Date();
       }
     });
+    const unlockIndex = content.findIndex(
+      (studyNode) => studyNode.status === STUDY_STATUS.LOCKED,
+    );
+    studyPath.unlockIndex = Math.max(unlockIndex, studyPath.unlockIndex);
     await studyPath.save();
     const studyNodeName = studyPath.course.chapters.reduce((acc, chapter) => {
       chapter.figures.forEach((figure) => {
@@ -82,5 +87,58 @@ export class QuizSheetSubmitActionService {
         elementName: studyNodeName,
       },
     );
+  }
+
+  private async [QUIZ_SHEET_CONFIG_TYPE.LEVEL](
+    quizSheet: QuizAnswerSheetDocument,
+  ) {
+    // Làm đúng 70% số câu hỏi thì unlock level tiếp theo
+    const { questions, chapter, figure, level, user } = quizSheet;
+    const numberCorrect = questions.filter((lq) => lq.correct).length;
+    if (numberCorrect / questions.length >= 0.7) {
+      const studyPath = await this.studyPathEntity.findOne({ user });
+      const { unlockIndex, content } = studyPath;
+      const currentStudyNode = content[unlockIndex];
+      if (!currentStudyNode) return;
+      if (currentStudyNode.element !== `M${level}-D${figure}-C${chapter}`)
+        return;
+      currentStudyNode.status = STUDY_STATUS.COMPLETED;
+      currentStudyNode.lastStudy = new Date();
+      const nextStudyNode = content[unlockIndex + 1];
+      studyPath.unlockIndex = unlockIndex + 1;
+      if (nextStudyNode) {
+        const nextNodeValue = slitIdToNumbers(nextStudyNode.element)
+          .slice(1)
+          .reverse()
+          .reduce((acc, value) => acc * 100 + value, 0);
+        const currentStudyNodeValue = chapter * 100 + figure;
+        if (nextNodeValue > currentStudyNodeValue)
+          studyPath.unlockIndex = unlockIndex + 1;
+      }
+      await studyPath.save();
+    }
+  }
+
+  private async [QUIZ_SHEET_CONFIG_TYPE.FIGURE](
+    quizSheet: QuizAnswerSheetDocument,
+  ) {
+    const { questions, chapter, figure, user } = quizSheet;
+    const numberCorrect = questions.filter((lq) => lq.correct).length;
+    if (numberCorrect / questions.length >= 0) {
+      const studyPath = await this.studyPathEntity.findOne({ user });
+      const { unlockIndex, content } = studyPath;
+      const nextStudyNode = content[unlockIndex + 1];
+      if (nextStudyNode) {
+        const nextNodeValue = slitIdToNumbers(nextStudyNode.element)
+          .slice(1)
+          .reverse()
+          .reduce((acc, value) => acc * 100 + value, 0);
+        const currentStudyNodeValue = chapter * 100 + figure;
+        if (nextNodeValue > currentStudyNodeValue) {
+          studyPath.unlockIndex = unlockIndex + 1;
+          await studyPath.save();
+        }
+      }
+    }
   }
 }

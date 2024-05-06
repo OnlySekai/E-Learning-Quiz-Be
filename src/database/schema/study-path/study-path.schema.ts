@@ -54,6 +54,18 @@ export class StudyPathEntity {
 
   @Prop({
     required: true,
+    default: 0,
+  })
+  unlockIndex: number;
+
+  @Prop({
+    required: true,
+    default: [],
+  })
+  mustStudyToContinue: number[];
+
+  @Prop({
+    required: true,
     type: SchemaTypes.ObjectId,
     ref: CourseEntity.name,
   })

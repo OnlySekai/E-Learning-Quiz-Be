@@ -59,6 +59,12 @@ export class QuizAnswerSheetEntity {
     ref: UserEntity.name,
   })
   user?: UserEntity;
+  @Prop({})
+  chapter?: number;
+  @Prop({})
+  figure?: number;
+  @Prop({})
+  level?: number;
   @Prop({
     type: SchemaTypes.ObjectId,
     ref: StudyPathEntity.name,

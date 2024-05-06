@@ -36,16 +36,12 @@ export class StudyPathService {
     return `This action returns all studyPath`;
   }
 
-  findAll(
-    userId: string,
-    courseId: string,
-  ): Promise<Pick<StudyPathDocument, 'content' | '_id'>[]> {
+  findAll(userId: string, courseId: string): Promise<StudyPathDocument> {
     return this.studyPathEntity
       .find({
         user: new mongoose.Types.ObjectId(userId),
         course: new mongoose.Types.ObjectId(courseId),
       })
-      .select({ content: 1 })
       .lean();
   }
 

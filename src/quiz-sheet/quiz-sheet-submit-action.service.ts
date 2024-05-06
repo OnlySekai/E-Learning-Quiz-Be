@@ -44,12 +44,30 @@ export class QuizSheetSubmitActionService {
       },
       {} as Record<string, LeanerQuestionEntity[]>,
     );
-    const notHaveToStudy = Object.entries(groupByChapterAndFigure)
-      .filter(([, leanerQuestion]) => {
-        const numberCorrect = leanerQuestion.filter((lq) => lq.correct).length;
-        return numberCorrect / leanerQuestion.length >= 0.7;
-      })
-      .map(([studyNode]) => studyNode);
+    const notHaveToStudy = Object.entries(groupByChapterAndFigure).reduce(
+      (pre, [key, leanerQuestion]) => {
+        leanerQuestion.sort((a, b) => a.question.level - b.question.level);
+        const xVector = leanerQuestion.map((x) => (x.correct ? 1 : 0));
+        const wVector = leanerQuestion.map(() => 1);
+        let lvStudy = leanerQuestion.length;
+        const THRESHOLD = 0.5;
+        while (lvStudy) {
+          const point = xVector
+            .slice(0, lvStudy)
+            .reduce((acc, x, index) => acc + x * wVector[index], 0);
+          const topPoint = xVector
+            .slice(0, lvStudy)
+            .reduce((acc, x, index) => acc + x * wVector[index], 0);
+          if (xVector[lvStudy - 1] && point >= topPoint * THRESHOLD) {
+            break;
+          }
+          lvStudy--;
+        }
+        pre[key] = lvStudy;
+        return pre;
+      },
+      {} as Record<string, number>,
+    );
     const studyPath = await this.studyPathEntity
       .findById(quizSheet.studyPath)
       .populate('course');
@@ -57,7 +75,9 @@ export class QuizSheetSubmitActionService {
     // remove element in content that is in notHaveToStudy
     content.forEach((studyNode) => {
       const figureChapterId = studyNode.element.split('-').slice(1).join('-');
-      if (notHaveToStudy.includes(figureChapterId)) {
+      if (notHaveToStudy[figureChapterId] === undefined)
+        return
+      if () {
         studyNode.status = STUDY_STATUS.COMPLETED;
         studyNode.lastStudy = new Date();
       }

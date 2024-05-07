@@ -1,7 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { QUIZ_SHEET_CONFIG_TYPE } from 'src/config/constants';
+import { MissionEntity } from 'src/database/schema/missions/missions.schema';
 import {
   LeanerQuestionEntity,
   QuizAnswerSheetDocument,
@@ -22,6 +23,8 @@ export class QuizSheetSubmitActionService {
   constructor(
     @InjectModel(StudyPathEntity.name)
     private studyPathEntity: Model<StudyPathEntity>,
+    @InjectModel(MissionEntity.name)
+    private missionEntity: Model<MissionEntity>,
     private missionService: MissionService,
   ) {}
   getHandler(configSheetType: QUIZ_SHEET_CONFIG_TYPE): HandlerSubmitAction {
@@ -113,6 +116,18 @@ export class QuizSheetSubmitActionService {
         return;
       currentStudyNode.status = STUDY_STATUS.COMPLETED;
       currentStudyNode.lastStudy = new Date();
+      await this.missionEntity.updateMany(
+        {
+          user,
+          id: `M${level}-D${figure}-C${chapter}`,
+          course: studyPath.course,
+        },
+        {
+          $set: {
+            isComplete: true,
+          },
+        },
+      );
       const nextStudyNode = content[unlockIndex + 1];
       studyPath.unlockIndex = unlockIndex + 1;
       if (nextStudyNode) {
@@ -122,7 +137,7 @@ export class QuizSheetSubmitActionService {
           .reduce((acc, value) => acc * 100 + value, 0);
         const currentStudyNodeValue = chapter * 100 + figure;
         if (nextNodeValue > currentStudyNodeValue)
-          studyPath.unlockIndex = unlockIndex + 1;
+          studyPath.unlockIndex = unlockIndex - 1;
       }
       await studyPath.save();
     }

@@ -33,7 +33,16 @@ export class QuizSheetSubmitActionService {
   private async [QUIZ_SHEET_CONFIG_TYPE.INPUT](
     quizSheet: QuizAnswerSheetDocument,
   ) {
-    const { questions } = quizSheet;
+    const { questions, user, studyPath: studyPathId } = quizSheet;
+    //delete all study path of user
+    await this.studyPathEntity.deleteMany({
+      user,
+      _id: {
+        $ne: studyPathId,
+      },
+    });
+    //delete all mission of user
+    await this.missionService.deleteAllMissionOfUser(user.toString());
     const groupByChapterAndFigure = questions.reduce(
       (acc, leanerQuestion: LeanerQuestionEntity) => {
         const key = `D${leanerQuestion.question.figure}-C${leanerQuestion.question.chapter}`;

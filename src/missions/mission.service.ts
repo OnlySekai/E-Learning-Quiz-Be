@@ -6,7 +6,7 @@ import {
   MissionDocument,
   MissionEntity,
 } from 'src/database/schema/missions/missions.schema';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import {
   MAX_HOUSE_PER_DAY,
   STUDY_PATH,
@@ -79,6 +79,11 @@ export class MissionService {
       });
     });
     await this.missionModel.insertMany(listMissionEntity);
+  }
+  deleteAllMissionOfUser(userId: string) {
+    return this.missionModel.deleteMany({
+      user: new mongoose.Types.ObjectId(userId),
+    });
   }
 
   findAll(userId: string): Promise<MissionDocument[]> {

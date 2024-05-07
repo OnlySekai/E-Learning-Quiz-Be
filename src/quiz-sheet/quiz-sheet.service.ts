@@ -67,7 +67,7 @@ export class QuizSheetService {
     userId: string,
   ): Promise<CreateQuizSheetResponse> {
     const sheetConfig = await this.quizSheetConfigService.getSheetConfigByRange(
-      [1, 1],
+      [2, 1],
       studiedChapter,
     );
     //TODO: Get questions

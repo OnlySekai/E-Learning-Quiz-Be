@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { QUIZ_SHEET_CONFIG_TYPE } from 'src/config/constants';
+import { QUIZ_SHEET_CONFIG_TYPE, RATIO_TO_PASS } from 'src/config/constants';
 import { MissionEntity } from 'src/database/schema/missions/missions.schema';
 import {
   LeanerQuestionEntity,
@@ -107,7 +107,7 @@ export class QuizSheetSubmitActionService {
     // Làm đúng 70% số câu hỏi thì unlock level tiếp theo
     const { questions, chapter, figure, level, user } = quizSheet;
     const numberCorrect = questions.filter((lq) => lq.correct).length;
-    if (numberCorrect / questions.length >= 0.7) {
+    if (numberCorrect / questions.length >= RATIO_TO_PASS) {
       const studyPath = await this.studyPathEntity.findOne({ user });
       const { unlockIndex, content } = studyPath;
       const currentStudyNode = content[unlockIndex];
@@ -137,7 +137,7 @@ export class QuizSheetSubmitActionService {
           .reduce((acc, value) => acc * 100 + value, 0);
         const currentStudyNodeValue = chapter * 100 + figure;
         if (nextNodeValue > currentStudyNodeValue)
-          studyPath.unlockIndex = unlockIndex - 1;
+          studyPath.unlockIndex = unlockIndex;
       }
       await studyPath.save();
     }
@@ -148,7 +148,7 @@ export class QuizSheetSubmitActionService {
   ) {
     const { questions, chapter, figure, user } = quizSheet;
     const numberCorrect = questions.filter((lq) => lq.correct).length;
-    if (numberCorrect / questions.length >= 0) {
+    if (numberCorrect / questions.length >= RATIO_TO_PASS) {
       const studyPath = await this.studyPathEntity.findOne({ user });
       const { unlockIndex, content } = studyPath;
       const nextStudyNode = content[unlockIndex + 1];

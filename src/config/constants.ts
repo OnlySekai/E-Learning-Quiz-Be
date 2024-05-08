@@ -57,3 +57,5 @@ export const ROLE = {
 };
 
 export const TOKEN_EXPIRES_IN = TIME_UNIT.DAY * 7;
+
+export const RATIO_TO_PASS = 0.7;

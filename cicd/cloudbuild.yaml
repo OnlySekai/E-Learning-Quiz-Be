@@ -29,7 +29,13 @@ steps:
           --region ${_DEPLOY_REGION}\
           --allow-unauthenticated \
           --image ${_CONTAINER_IMAGE_NAME} \
-
+    
+  - id: send-email
+      name: 'namshi/smtp'
+      args:
+        - '-c'
+        - |
+          echo -e "Subject: Build Notification\n\nBuild has completed. Check the build logs for more details." | sendmail -v minhtuan25902@gmail.com
 substitutions:
   _ENV: production
   _CONTAINER_IMAGE_NAME: gcr.io/${PROJECT_ID}/${_SERVICE_NAME}

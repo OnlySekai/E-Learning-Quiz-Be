@@ -11,7 +11,7 @@ export const REPEAT_CONTENT: Record<string, string[]> = repeat_content;
 
 export const MAX_HOUSE_PER_DAY = 14;
 
-export const STUDY_REVIEW_RATIO = 3 / 4;
+export const STUDY_REVIEW_RATIO = 1 / 2;
 
 export const STUDY_PATH: Record<string, STUDY_PATH_NODE> = path;
 

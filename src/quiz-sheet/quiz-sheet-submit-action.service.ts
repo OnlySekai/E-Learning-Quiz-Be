@@ -116,6 +116,7 @@ export class QuizSheetSubmitActionService {
         return;
       currentStudyNode.status = STUDY_STATUS.COMPLETED;
       currentStudyNode.lastStudy = new Date();
+      currentStudyNode.cntRepeat++;
       await this.missionEntity.updateMany(
         {
           user,

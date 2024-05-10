@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { NotificationEntity } from 'src/database/schema/notification/notifications.schema';
 import mongoose, { Model } from 'mongoose';
 import { NOTIFICATION_TYPE } from 'src/config/constants';
+import { GetNotificationResponse } from './dto/get-notification.response';
 
 @Injectable()
 export class NotificationService {
@@ -36,15 +37,18 @@ export class NotificationService {
     });
     await notification.save();
   }
-  async findAll(userId: string, isRead = false) {
-    const notifications = await this.notificationModel
-      .find({ userId, isRead })
-      .lean();
-    await this.notificationModel.updateMany(
-      { userId, isRead: false },
+  async findAll(userId: string): Promise<GetNotificationResponse> {
+    const notifications = await this.notificationModel.find({ userId }).lean();
+    return {
+      notifications,
+      total: notifications.length,
+    };
+  }
+  async makeRead(id: string): Promise<void> {
+    await this.notificationModel.updateOne(
+      { _id: new mongoose.Types.ObjectId(id) },
       { isRead: true },
     );
-    return notifications;
   }
 
   findOne(id: number) {

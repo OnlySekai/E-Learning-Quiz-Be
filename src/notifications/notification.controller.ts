@@ -15,16 +15,21 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { RequestWithUser } from 'src/types/types';
 
 @UseGuards(AuthGuard)
-@Controller('report')
+@Controller('notifications')
 export class ReportController {
   constructor(private readonly reportService: NotificationService) {}
 
-  @Post()
+  @Post('report')
   reportQuestion(
     @Body() reportContent: ReportQuestionRequest,
     @Req() req: RequestWithUser,
   ) {
     return this.reportService.reportQuestion(req.user.id, reportContent);
+  }
+
+  @Patch('read/:id')
+  makeRead(@Param('id') id: string) {
+    return this.reportService.makeRead(id);
   }
 
   @Get()

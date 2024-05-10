@@ -122,4 +122,22 @@ export class QuizSheetConfigService {
       content,
     };
   }
+  getSheetByListStudyNode(listStudyNode: string[]): QuizSheetConfigModel {
+    const content: QuizSheetConfigContentModel[] = [];
+    for (const figureId of listStudyNode) {
+      const [figure, chapter] = slitIdToNumbers(figureId);
+      for (const lv of QUESTION_LEVEL_VALUES) {
+        content.push({
+          chapter,
+          figure,
+          lv,
+          total: 1,
+        });
+      }
+    }
+    return {
+      fixDuration: listStudyNode.length * TIME_UNIT.MINUTE * 10,
+      content,
+    };
+  }
 }

@@ -20,6 +20,11 @@ export class StudyStatusEntity {
     enum: [STUDY_STATUS.LOCKED, STUDY_STATUS.UNLOCKED, STUDY_STATUS.COMPLETED],
   })
   status: STUDY_STATUS;
+  @Prop({
+    required: true,
+    default: 0,
+  })
+  cntRepeat?: number;
   @Prop()
   lastStudy?: Date;
 }
@@ -27,7 +32,7 @@ export const StudyStatusSchema =
   SchemaFactory.createForClass(StudyStatusEntity);
 export type StudyStatusDocument = HydratedDocument<StudyStatusEntity>;
 
-@Schema({ collection: 'study-path' })
+@Schema({ collection: 'study_path' })
 export class StudyPathEntity {
   @Prop({
     required: true,
@@ -75,6 +80,8 @@ export class StudyPathEntity {
     type: [StudyStatusSchema],
   })
   content: StudyStatusEntity[];
+  @Prop({})
+  timeScheduler: Date;
 }
 
 export const StudyPathSchema = SchemaFactory.createForClass(StudyPathEntity);

@@ -27,12 +27,6 @@ import { AttemptQuizLevelRequest } from './dto/request/attempt-quiz-level.reques
 export class QuizDurationController {
   constructor(private readonly quizSheetService: QuizSheetService) {}
 
-  @ApiOperation({ summary: 'Join a quiz' })
-  @Post()
-  joinQuiz(@Body() body: { studiedChapter: number[] }) {
-    return this.quizSheetService.attemptQuizDemo(body.studiedChapter);
-  }
-
   @ApiOperation({ summary: 'Join a quiz check input' })
   @Post('/input')
   joinQuizInput(
@@ -65,7 +59,6 @@ export class QuizDurationController {
       req.user.id,
     );
   }
-
 
   @ApiOperation({ summary: 'Get a quiz session' })
   @Get('/:id')

@@ -7,10 +7,11 @@ import { DatabaseModule } from './database/database.module';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { AuthModule } from './auth/auth.module';
 import { CourseModule } from './course/course.module';
-import { ReportModule } from './report/report.module';
+import { NotificationModule } from './notifications/notification.module';
 import { UsersModule } from './users/users.module';
 import { StudyPathModule } from './study-path/study-path.module';
 import { MissionModule } from './missions/mission.module';
+import { SchedulerModule } from './scheduler/scheduler.module';
 
 @Module({
   controllers: [AppController],
@@ -24,10 +25,11 @@ import { MissionModule } from './missions/mission.module';
     DatabaseModule,
     AuthModule,
     CourseModule,
-    ReportModule,
+    NotificationModule,
     UsersModule,
     StudyPathModule,
     MissionModule,
+    SchedulerModule,
   ],
 })
 export class AppModule {}

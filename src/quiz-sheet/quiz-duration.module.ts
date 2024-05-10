@@ -12,5 +12,6 @@ import { MissionModule } from 'src/missions/mission.module';
     QuizSheetConfigService,
     QuizSheetSubmitActionService,
   ],
+  exports: [QuizSheetService],
 })
 export class QuizDurationModule {}

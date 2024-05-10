@@ -7,24 +7,29 @@ import {
   Param,
   Delete,
   UseGuards,
+  Req,
 } from '@nestjs/common';
-import { ReportService } from './report.service';
+import { NotificationService } from './notification.service';
 import { ReportQuestionRequest } from './dto/report-question.request';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { RequestWithUser } from 'src/types/types';
 
 @UseGuards(AuthGuard)
 @Controller('report')
 export class ReportController {
-  constructor(private readonly reportService: ReportService) {}
+  constructor(private readonly reportService: NotificationService) {}
 
   @Post()
-  reportQuestion(@Body() reportContent: ReportQuestionRequest) {
-    return this.reportService.reportQuestion('anonymous', reportContent);
+  reportQuestion(
+    @Body() reportContent: ReportQuestionRequest,
+    @Req() req: RequestWithUser,
+  ) {
+    return this.reportService.reportQuestion(req.user.id, reportContent);
   }
 
   @Get()
-  findAll() {
-    return this.reportService.findAll();
+  findAll(@Req() req: RequestWithUser) {
+    return this.reportService.findAll(req.user.id);
   }
 
   @Get(':id')

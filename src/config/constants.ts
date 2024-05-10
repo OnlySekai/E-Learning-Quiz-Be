@@ -37,7 +37,7 @@ export enum QUIZ_SHEET_CONFIG_TYPE {
   INPUT = 0,
   LEVEL = 1,
   FIGURE = 2,
-  EXAM = 3,
+  REMIND = 3,
 }
 
 export const TIME_UNIT = {
@@ -49,6 +49,7 @@ export const TIME_UNIT = {
 
 export const NOTIFICATION_TYPE = {
   REPORT_QUESTION: 1,
+  REMIND_QUESTION: 2,
 };
 
 export const ROLE = {
@@ -59,3 +60,10 @@ export const ROLE = {
 export const TOKEN_EXPIRES_IN = TIME_UNIT.DAY * 7;
 
 export const RATIO_TO_PASS = 0.7;
+
+export const EF_VALUES = {
+  [QUESTION_LEVEL.RECOGNIZE]: 2.5,
+  [QUESTION_LEVEL.UNDERSTAND]: 2.1,
+  [QUESTION_LEVEL.APPLY]: 1.7,
+  [QUESTION_LEVEL.ANALYZE]: 1.3,
+};

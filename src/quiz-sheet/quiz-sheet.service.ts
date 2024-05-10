@@ -135,21 +135,17 @@ export class QuizSheetService {
     return this.getCreateQuizSheetResponse(newSheet);
   }
 
-  async attemptQuizDemo(
-    studiedChapter: number[],
+  async attemptRemindQuestion(
+    listStudyNode: string[],
+    userId: string,
   ): Promise<CreateQuizSheetResponse> {
-    //TODO: Get sheet config
-    const sheetConfig = await this.quizSheetConfigService.getSheetConfigByRange(
-      [1, 1],
-      studiedChapter,
-    );
-    //TODO: Get questions
-    const { fixDuration: quizDuration } = sheetConfig;
+    const sheetConfig =
+      this.quizSheetConfigService.getSheetByListStudyNode(listStudyNode);
     const questionIds = await this.getQuestionIdsFromConfig(sheetConfig);
-    //TODO: Create new sheet
     const newSheet = new this.quizSheetModel({
-      configType: QUIZ_SHEET_CONFIG_TYPE.INPUT,
-      quizDuration,
+      user: new Types.ObjectId(userId),
+      configType: QUIZ_SHEET_CONFIG_TYPE.REMIND,
+      quizDuration: sheetConfig.fixDuration,
       questions: questionIds.map((question) => ({
         question,
         histories: [],

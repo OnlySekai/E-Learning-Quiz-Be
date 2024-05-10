@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, SchemaType, SchemaTypes } from 'mongoose';
+import { UserEntity } from '../users/user.schema';
 
 @Schema({ collection: 'notifications' })
 export class NotificationEntity {
@@ -13,6 +14,7 @@ export class NotificationEntity {
   message: string;
   @Prop({
     required: true,
+    index: true,
   })
   type: number;
   @Prop({
@@ -21,12 +23,15 @@ export class NotificationEntity {
   })
   isRead: boolean;
   @Prop({
-    default: '',
+    type: SchemaTypes.ObjectId,
+    ref: UserEntity.name,
+    index: true,
   })
-  userId: string;
+  userId: UserEntity;
   @Prop({
     required: true,
     default: false,
+    index: true,
   })
   forAdmin: boolean;
 }

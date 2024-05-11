@@ -67,7 +67,7 @@ export class StudyPathEntity {
     required: true,
     default: [],
   })
-  mustStudyToContinue: number[];
+  mustStudyToContinue: string[];
 
   @Prop({
     required: true,

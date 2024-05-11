@@ -32,20 +32,24 @@ export class QuizSheetSubmitActionService {
       this[configSheetType] ?? async function () {};
     return handler.bind(this);
   }
+  private assessGudman(answers: boolean[]) {
+    let level = answers.length;
+    for (let i = level; i > 0; i--) {
+      level = i;
+      const gudman = this.getGudman(answers.slice(0, i));
+      if (answers[i - 1] && gudman >= 0.5) break;
+      level -= 1;
+    }
+    return level;
+  }
+  private getGudman(answers: boolean[]) {
+    const numberTrueAfterLatestTrue = answers.filter((answer) => answer).length;
+    return numberTrueAfterLatestTrue / answers.length;
+  }
 
-  private async [QUIZ_SHEET_CONFIG_TYPE.INPUT](
-    quizSheet: QuizAnswerSheetDocument,
-  ) {
-    const { questions, user, studyPath: studyPathId } = quizSheet;
-    //delete all study path of user
-    await this.studyPathEntity.deleteMany({
-      user,
-      _id: {
-        $ne: studyPathId,
-      },
-    });
-    //delete all mission of user
-    await this.missionService.deleteAllMissionOfUser(user.toString());
+  private learnerSkillLevel(
+    questions: LeanerQuestionEntity[],
+  ): Record<string, number> {
     const groupByChapterAndFigure = questions.reduce(
       (acc, leanerQuestion: LeanerQuestionEntity) => {
         const key = `D${leanerQuestion.question.figure}-C${leanerQuestion.question.chapter}`;
@@ -57,20 +61,42 @@ export class QuizSheetSubmitActionService {
       },
       {} as Record<string, LeanerQuestionEntity[]>,
     );
-    const notHaveToStudy = Object.entries(groupByChapterAndFigure)
-      .filter(([, leanerQuestion]) => {
-        const numberCorrect = leanerQuestion.filter((lq) => lq.correct).length;
-        return numberCorrect / leanerQuestion.length >= 0.7;
-      })
-      .map(([studyNode]) => studyNode);
-    const studyPath = await this.studyPathEntity
-      .findById(quizSheet.studyPath)
-      .populate('course');
+    return Object.entries(groupByChapterAndFigure).reduce(
+      (acc, [key, learnerQuestions]) => {
+        learnerQuestions.sort((a, b) => a.question.level - b.question.level);
+        const vector = learnerQuestions.map((lq) => lq.correct);
+        const level = this.assessGudman(vector);
+        acc[key] = level;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+  }
+
+  private async [QUIZ_SHEET_CONFIG_TYPE.INPUT](
+    quizSheet: QuizAnswerSheetDocument,
+  ) {
+    const { questions, user, studyPath: studyPathId } = quizSheet;
+    //delete all study path of user
+    //delete all mission of user
+    const [studyPath] = await Promise.all([
+      this.studyPathEntity.findById(quizSheet.studyPath).populate('course'),
+      this.studyPathEntity.deleteMany({
+        user,
+        _id: {
+          $ne: studyPathId,
+        },
+      }),
+      this.missionService.deleteAllMissionOfUser(user.toString()),
+    ]);
+    const learnerSkillLevel = this.learnerSkillLevel(questions);
     const { content } = studyPath;
     // remove element in content that is in notHaveToStudy
     content.forEach((studyNode) => {
       const figureChapterId = studyNode.element.split('-').slice(1).join('-');
-      if (notHaveToStudy.includes(figureChapterId)) {
+      const [questionLv] = slitIdToNumbers(studyNode.element);
+      const leanerLevel = learnerSkillLevel[figureChapterId] || 0;
+      if (questionLv <= leanerLevel) {
         studyNode.status = STUDY_STATUS.COMPLETED;
         studyNode.lastStudy = new Date();
       }
@@ -114,6 +140,9 @@ export class QuizSheetSubmitActionService {
       if (!currentStudyNode) return;
       if (currentStudyNode.element !== `M${level}-D${figure}-C${chapter}`)
         return;
+      studyPath.mustStudyToContinue = studyPath.mustStudyToContinue.filter(
+        (value) => value !== currentStudyNode.element,
+      );
       currentStudyNode.status = STUDY_STATUS.COMPLETED;
       currentStudyNode.lastStudy = new Date();
       currentStudyNode.cntRepeat++;
@@ -147,23 +176,46 @@ export class QuizSheetSubmitActionService {
   private async [QUIZ_SHEET_CONFIG_TYPE.FIGURE](
     quizSheet: QuizAnswerSheetDocument,
   ) {
-    const { questions, chapter, figure, user } = quizSheet;
-    const numberCorrect = questions.filter((lq) => lq.correct).length;
-    if (numberCorrect / questions.length >= RATIO_TO_PASS) {
-      const studyPath = await this.studyPathEntity.findOne({ user });
-      const { unlockIndex, content } = studyPath;
-      const nextStudyNode = content[unlockIndex + 1];
-      if (nextStudyNode) {
-        const nextNodeValue = slitIdToNumbers(nextStudyNode.element)
-          .slice(1)
-          .reverse()
-          .reduce((acc, value) => acc * 100 + value, 0);
-        const currentStudyNodeValue = chapter * 100 + figure;
-        if (nextNodeValue > currentStudyNodeValue) {
-          studyPath.unlockIndex = unlockIndex + 1;
-          await studyPath.save();
-        }
-      }
-    }
+    const {
+      questions,
+      chapter: sheetChapter,
+      figure: sheetFigure,
+      user,
+    } = quizSheet;
+    const studyPath = await this.studyPathEntity.findOne({ user });
+    const { unlockIndex, content } = studyPath;
+    const currentStudyNode = content[unlockIndex];
+    if (!currentStudyNode) return;
+    const [_, currentFigure, currentChapter] = slitIdToNumbers(
+      currentStudyNode.element,
+    );
+    if (currentFigure !== sheetFigure || currentChapter !== sheetChapter)
+      return;
+    //filter question in current figure and chapter
+    const questionsInCurrentFigure = questions.filter(
+      (lq) =>
+        lq.question.figure === currentFigure &&
+        lq.question.chapter === currentChapter,
+    );
+    const [[figureChapter, leanerLv]] = Object.entries(
+      this.learnerSkillLevel(questionsInCurrentFigure),
+    );
+    const studyNodeCouldReStudy = content.slice(
+      unlockIndex - 3,
+      unlockIndex + 1,
+    );
+    const mustStudyToContinue = [];
+    studyNodeCouldReStudy.forEach((studyNode) => {
+      const [lv, nodeFigure, nodeChapter] = slitIdToNumbers(studyNode.element);
+      const consideringNode =
+        nodeFigure === currentFigure && nodeChapter === currentChapter;
+      if (!consideringNode) return;
+      // if (lv > leanerLv) studyPath.mustStudyToContinue.push(studyNode.element);
+      if (lv > leanerLv) mustStudyToContinue.push(studyNode.element);
+    });
+    // if (!studyPath.mustStudyToContinue.length)
+    //   studyPath.unlockIndex = unlockIndex + 1;
+    if (!mustStudyToContinue.length) studyPath.unlockIndex = unlockIndex + 1;
+    await studyPath.save();
   }
 }

@@ -55,6 +55,10 @@ export class QuizQuestionEntity {
   };
   createdAt: Date;
   updatedAt: Date;
+  @Prop({})
+  guideImg: string[];
+  @Prop({})
+  solveImg: string[];
 }
 
 export const QuizQuestionSchema =

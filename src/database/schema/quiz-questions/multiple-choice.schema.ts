@@ -40,6 +40,8 @@ export class MultipleChoiceQuizQuestionEntity implements QuizQuestionEntity {
   level: number;
   createdAt: Date;
   updatedAt: Date;
+  guideImg: string[];
+  solveImg: string[];
   @Prop({
     type: MultipleChoiceConfigSchema,
     required: true,

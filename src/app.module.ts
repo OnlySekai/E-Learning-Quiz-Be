@@ -12,6 +12,7 @@ import { UsersModule } from './users/users.module';
 import { StudyPathModule } from './study-path/study-path.module';
 import { MissionModule } from './missions/mission.module';
 import { SchedulerModule } from './scheduler/scheduler.module';
+import { QuestionsModule } from './questions/questions.module';
 
 @Module({
   controllers: [AppController],
@@ -30,6 +31,7 @@ import { SchedulerModule } from './scheduler/scheduler.module';
     StudyPathModule,
     MissionModule,
     SchedulerModule,
+    QuestionsModule,
   ],
 })
 export class AppModule {}

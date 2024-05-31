@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { QuizQuestionEntity } from 'src/database/schema/quiz-questions/quiz-question.schema';
 import { Model } from 'mongoose';
 import { CreateQuestionDto } from './dto/create-question.dto';
+import { GetQuestionFilterRequest } from './dto/get-question.dto';
 
 @Injectable()
 export class QuestionsService {
@@ -11,16 +12,16 @@ export class QuestionsService {
     @InjectModel(QuizQuestionEntity.name)
     private readonly quizQuestionModel: Model<QuizQuestionEntity>,
   ) {}
-  create(createQuestionDto: CreateQuestionDto) {
-    return this.quizQuestionModel.create(createQuestionDto);
+  async create(createQuestionDto: CreateQuestionDto) {
+    const data = await this.quizQuestionModel.insertMany([createQuestionDto]);
+    return data.at(0)._id.toString();
   }
-
-  async findAll(limit = 20, page = 0) {
+  async findAll(limit = 20, page = 0, filter: GetQuestionFilterRequest = {}) {
     const questions = await this.quizQuestionModel
-      .find()
+      .find(filter)
       .limit(limit)
       .skip(limit * page);
-    const total = await this.quizQuestionModel.countDocuments();
+    const total = await this.quizQuestionModel.countDocuments(filter);
     return {
       questions,
       total,

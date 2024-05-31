@@ -17,7 +17,7 @@ export class QuizQuestionEntity {
   type: number;
 
   @Prop({
-    required: true,
+    default: '',
   })
   question: string;
 
@@ -59,6 +59,8 @@ export class QuizQuestionEntity {
   guideImg: string[];
   @Prop({})
   solveImg: string[];
+  @Prop({})
+  images: string[];
 }
 
 export const QuizQuestionSchema =

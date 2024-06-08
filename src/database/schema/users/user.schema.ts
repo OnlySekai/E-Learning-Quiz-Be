@@ -24,4 +24,5 @@ export class UserEntity {
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserEntity);
+UserSchema.index({ firstName: 'text', lastName: 'text', email: 'text' });
 export type UserDocument = HydratedDocument<UserEntity>;

@@ -1,11 +1,20 @@
 import path from '../../data/study-path.json';
 import repeat_content from '../../data/repeat_content.json';
+import target_study_path from '../../data/target-study-path.json';
 
 export interface STUDY_PATH_NODE {
   time: number;
   children: string[];
   parent: string[];
 }
+
+export interface TARGET_STUDY_PATH_NODE {
+  members: string[];
+  point: number;
+}
+
+export const TARGET_STUDY_PATH: Record<string, TARGET_STUDY_PATH_NODE> =
+  target_study_path;
 
 export const REPEAT_CONTENT: Record<string, string[]> = repeat_content;
 

@@ -156,6 +156,23 @@ export class QuizSheetService {
     return this.getCreateQuizSheetResponse(newSheet);
   }
 
+  async attemptQuizTestExam(period: number, userId: string) {
+    const sheetConfig = this.quizSheetConfigService.getSheetTestExam(period);
+    const questionIds = await this.getQuestionIdsFromConfig(sheetConfig);
+    const newSheet = new this.quizSheetModel({
+      user: new Types.ObjectId(userId),
+      configType: QUIZ_SHEET_CONFIG_TYPE.REMIND,
+      quizDuration: sheetConfig.fixDuration,
+      questions: questionIds.map((question) => ({
+        question,
+        histories: [],
+        correct: false,
+      })),
+    });
+    await newSheet.save();
+    return this.getCreateQuizSheetResponse(newSheet);
+  }
+
   async getQuizSheet(
     sheetId: string,
     omitKey = false,

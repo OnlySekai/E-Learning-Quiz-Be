@@ -60,6 +60,15 @@ export class QuizDurationController {
     );
   }
 
+  @ApiOperation({ summary: 'Join a quiz test exam' })
+  @Post('/test-exam')
+  joinQuizTestExam(
+    @Body() body: { period: number },
+    @Req() req: RequestWithUser,
+  ) {
+    return this.quizSheetService.attemptQuizTestExam(body.period, req.user.id);
+  }
+
   @ApiOperation({ summary: 'Get a quiz session' })
   @Get('/:id')
   getQuizSession(@Param('id') sheetId: string): Promise<GetQuizSheetResponse> {

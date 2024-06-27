@@ -1,15 +1,11 @@
 import {
   Controller,
   Get,
-  Post,
-  Body,
-  Patch,
   Param,
   Delete,
   UseGuards,
 } from '@nestjs/common';
 import { CourseService } from './course.service';
-import { UpdateCourseDto } from './dto/update-course.dto';
 import { CourseEntity } from 'src/database/schema/courses/course.schema';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';

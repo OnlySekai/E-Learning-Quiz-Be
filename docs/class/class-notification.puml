@@ -1,0 +1,42 @@
+@startuml
+left to right direction
+class NotificationService {
+  -notificationSchema: NotificationSchema
+
+  +constructor(notificationSchema:\n NotificationSchema)
+  +reportQuestion(userId: string,\n reportQuestionRequest: ReportQuestionRequest):\n Promise<void>
+  +remindQuestion(userId: string, sheetId: string):\n Promise<void>
+  +findAll(userId: string):\n Promise<GetNotificationResponse>
+  +makeRead(id: string): Promise<void>
+  +findOne(id: number): string
+  +remove(id: number): string
+}
+class ReportQuestionRequest {
+  -questionId: string
+  -message: string
+}
+
+class NotificationSchema {
+}
+
+class MongooseSchema {
+  + find(query: any): Promise<any>
+  + findOne(query: any): Promise<any>
+  + create(data: any): Promise<any>
+  + updateOne(query: any, data: any): Promise<any>
+  + deleteOne(query: any): Promise<any>
+  + findById(id: string): Promise<any>
+  + findByIdAndUpdate(id: string, data: any): Promise<any>
+  + findByIdAndDelete(id: string): Promise<any>
+  + updateMany(query: any, data: any): Promise<any>
+  + deleteMany(query: any): Promise<any>
+}
+class MongoDB {
+}
+MongooseSchema --> MongoDB
+NotificationSchema -r-|> MongooseSchema
+
+NotificationService ..> GetNotificationResponse : uses
+NotificationService ..> ReportQuestionRequest : uses
+NotificationService -right-> NotificationSchema : has
+@enduml

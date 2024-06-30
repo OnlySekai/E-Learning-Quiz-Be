@@ -10,8 +10,8 @@ rectangle "Phân rã usecase lấy tài liệu học tập" {
   usecase "Đọc thẻ ghi nhớ" as UC3
   (Làm nhiệm vụ học tập) as nvht
   UC2 -|> nvht
-  UC1 <.. UC2 : "Thông qua"
-  UC1 <.. UC3 : "Thông qua"
+  UC1 <.. UC2 : <<extend>>
+  UC1 <.. UC3 : <<extend>>
 }
 
 user --> UC1

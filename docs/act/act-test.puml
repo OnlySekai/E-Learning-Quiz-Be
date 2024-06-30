@@ -1,0 +1,61 @@
+	
+@startuml
+|Quản trị viên|
+|Người dùng|
+split
+   -[hidden]->
+   :Kiểm tra đầu vào;
+split again
+   -[hidden]->
+   :Làm bài tập theo mức;
+split again
+   -[hidden]->
+   :Làm bài tập kết dạng;
+split again
+   -[hidden]->
+   :Làm bài nhắc lại kiến thức;
+end split
+|Hệ thống|
+:Tạo bài thi\n tương ứng;
+:Hiển thị bài thi;
+|Người dùng|
+while (Nộp bài) is (false)
+    if (Đề bài sai) then (true)
+        :Phản ánh đề sai;
+        fork
+            |Quản trị viên|
+            :Nhận thông báo sai đề;
+            :Lấy câu hỏi;
+            if (Kiểm tra lại) then (sai)
+                :Sửa câu hỏi;
+            endif
+            |Quản trị viên|
+            stop
+        |Người dùng|
+        fork again
+            :Nhận thông báo thành công;
+        end fork
+    endif
+    |Người dùng|
+    if (Làm bài tập theo mức & Cần gợi ý) then (true)
+        :Xem gợi ý;
+    endif
+    :Điền đáp án;
+    |Hệ thống|
+    if (Hết thời gian) then (true)
+        |Người dùng|
+        break
+    else (false)
+    :Câu tiếp theo;
+    endif
+end while
+|Hệ thống|
+:Chọn phương pháp\n đánh giá;
+:Đánh giá kêt quả;
+|Người dùng|
+:Xem kết quả;
+if (Chọn xem lời giải) then (true)
+    :Xem lời giải;
+endif
+end
+@enduml

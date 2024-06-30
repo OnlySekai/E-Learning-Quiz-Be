@@ -1,0 +1,28 @@
+@startuml
+|Người dùng|
+start
+:Chọn nút xây dựng lộ trình;
+fork
+  :Nhập điểm mong muốn;
+fork again
+  :Nhập thời gian còn lại;
+fork again
+  :Chọn kì thi hướng tới;
+fork again
+  :Chọn kiến thức đã học qua;
+end merge
+:Nhấn xây dựng lộ trình học;
+|Hệ thống|
+:Tối ưu hóa lộ trình;
+:Lưu lộ trình học;
+|Người dùng|
+:Làm bài kiểm tra đầu vào;
+|Hệ thống|
+:Loại bỏ các kiến thức đã biết;
+:Cập nhật lộ trình học;
+:Hiển kết quả bài kiểm tra;
+|Người dùng|
+:Quay lại trang chủ;
+:Xem lộ trình học;
+stop
+@enduml

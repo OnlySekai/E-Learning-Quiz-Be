@@ -1,0 +1,21 @@
+@startuml
+left to right direction
+class QuizSheetService {
+  -quizSheetModel: QuizsheetSchema
+  -quizQuestionModel: QuestionSchema
+  -quizSheetConfigService: QuizSheetConfigService
+  -quizSheetSubmitActionService: QuizSheetSubmitActionService
+  +constructor(\n quizSheetModel: QuizAnswerSheetEntity,\n quizQuestionModel: QuizQuestionEntity,\n quizSheetConfigService: QuizSheetConfigService,\n quizSheetSubmitActionService: QuizSheetSubmitActionService)
+  +attemptQuizInput(inputData: String)
+  +attemptQuizLevel(level: Int)
+  +attemptQuizEndFigure(figure: String)
+  +attemptRemindQuestion(questionId: Int)
+  +attemptQuizTestExam(examId: Int)
+  +getQuizSheet(quizSheetId: Int): QuizAnswerSheetEntity
+  +submitQuestion(questionId: Int, answer: String): Boolean
+  +submitQuizSheet(quizSheetId: Int): Boolean
+  +submitAnswerSurvey(surveyId: Int, answer: String): Boolean
+  -getQuestionIdsFromConfig(configId: Int): List<Int>
+  -getCreateQuizSheetResponse(quizSheet: QuizAnswerSheetEntity):\n QuizAnswerSheetEntity
+}
+@enduml
